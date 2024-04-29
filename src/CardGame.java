@@ -14,19 +14,27 @@ public class CardGame {
             if(choice == 1){
                 // 게임하기 선택 시
                 while(true){
-                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다. 어떤 게임을 하시겠습니까?\n1. 1번 게임\n2. 2번 게임\n3. 3번 게임");
+                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다. 어떤 게임을 하시겠습니까?\n1. 1번 게임(카지노워)\n2. 2번 게임(오마하포커)\n3. 3번 게임(오목게임)\n4번 게임(Seven7)");
                 
                     int gamechoice = sc.nextInt();
 
                     if(gamechoice == 1){
+                        CasinoWar.main(args);
                         // 1번 게임 선택 시
                         break;
                     }
                     else if(gamechoice == 2){
+                        OmahaPoker.main(args);
                         // 2번 게임 선택 시
                         break;
                     }
                     else if(gamechoice == 3){
+                        OmokGame.main(args);
+                        // 3번 게임 선택 시
+                        break;
+                    }
+                    else if(gamechoice == 4){
+                        SevensGame.main(args);
                         // 3번 게임 선택 시
                         break;
                     }
