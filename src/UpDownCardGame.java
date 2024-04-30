@@ -12,6 +12,9 @@ public class UpDownCardGame {
 
         int rannum = (int)(Math.random()*50);
 
+
+
+        //ㅇ
         for(int i = 0; i < 5; i++){
             System.out.print("숫자 입력 : ");
             
