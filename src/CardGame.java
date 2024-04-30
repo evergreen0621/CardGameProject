@@ -14,18 +14,18 @@ public class CardGame {
             if(choice == 1){
                 // 게임하기 선택 시
                 while(true){
-                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다. 어떤 게임을 하시겠습니까?\n1. 1번 게임(카지노워)\n2. 2번 게임(오마하포커)\n3. 3번 게임(업다운 카드게임)\n4번 게임(Seven7)");
+                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다. 어떤 게임을 하시겠습니까?\n   1. 1번 게임(카지노워)\n2. 2번 게임(오마하포커)\n3. 3번 게임(업다운 카드게임)\n4. 4번 게임(Seven7)\n5. 5번 게임(매칭 카드 게임)");
                 
                     int gamechoice = sc.nextInt();
 
                     if(gamechoice == 1){
-                        System.out.println("카드게임이 시작됩니다 !!");
+                        System.out.println("카지노워 카드게임이 시작됩니다 !!");
                         CasinoWar.main(args);
                         // 1번 게임 선택 시
                         break;
                     }
                     else if(gamechoice == 2){
-                        System.out.println("카드게임이 시작됩니다 !!");
+                        System.out.println("오마하포커 카드게임이 시작됩니다 !!");
                         OmahaPoker.main(args);
                         // 2번 게임 선택 시
                         break;
@@ -39,6 +39,12 @@ public class CardGame {
                     else if(gamechoice == 4){
                         System.out.println("Sevens 카드게임이 시작됩니다 !!");
                         SevensGame.main(args);
+                        // 3번 게임 선택 시
+                        break;
+                    }
+                    else if(gamechoice == 5){
+                        System.out.println("매칭 카드게임이 시작됩니다 !!");
+                        MatchingCards.main(args);
                         // 3번 게임 선택 시
                         break;
                     }
