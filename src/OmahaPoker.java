@@ -142,7 +142,6 @@ public class OmahaPoker {
         return ""; // 예외 처리
     }
 
-
     // 하이카드의 랭크 반환
     private static String getHighCardRank(List<String> cards) {
         List<Integer> ranks = new ArrayList<>();
@@ -191,10 +190,13 @@ public class OmahaPoker {
         // 예: "원페어 10" vs "원페어 9" 일 때 "원페어 10"이 승리합니다.
         // "하이카드"의 경우 가장 높은 카드의 숫자를 비교합니다.
 
+        // 패의 종류 비교
         String[] playerHandType = playerHand.keySet().toArray(new String[0]);
         String[] computerHandType = computerHand.keySet().toArray(new String[0]);
 
-        // 패의 종류 비교
+        System.out.println("플레이어의 패 종류: " + playerHandType[0]);
+        System.out.println("컴퓨터의 패 종류: " + computerHandType[0]);
+
         int compare = compareHandTypes(playerHandType[0], computerHandType[0]);
         if (compare > 0) {
             System.out.println("플레이어가 승리했습니다!");
