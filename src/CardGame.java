@@ -6,6 +6,13 @@ public class CardGame {
         // 응애
 
         System.out.println("카드 게임 랜드에 오신 것을 환영합니다!");
+        System.out.println("|\\_/|");
+        System.out.println("|q p|   /}");
+        System.out.println("( 0 )\"\"\"\\");
+        System.out.println("|\"^\"`    |");
+        System.out.println("||_/=\\\\__|");
+
+
 
         while(true){
             System.out.println("다음 선택지 중 하나를 골라주세요.\n1. 게임하기\n2. 랭킹 확인\n3. 종료하기");
@@ -15,7 +22,7 @@ public class CardGame {
             if(choice == 1){
                 // 게임하기 선택 시
                 while(true){
-                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다. 어떤 게임을 하시겠습니까?\n   1. 1번 게임(카지노워)\n2. 2번 게임(오마하포커)\n3. 3번 게임(업다운 카드게임)\n4. 4번 게임(Seven7)\n5. 5번 게임(스파이더 카드 게임)\n6. 6번 게임(야구 게임)");
+                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다. \n어떤 게임을 하시겠습니까?\n   1. 1번 게임(카지노워)\n2. 2번 게임(오마하포커)\n3. 3번 게임(업다운 카드게임)\n4. 4번 게임(Seven7)\n5. 5번 게임(스파이더 카드 게임)\n6. 6번 게임(야구 게임)");
                 
                     int gamechoice = sc.nextInt();
 
@@ -64,6 +71,14 @@ public class CardGame {
             else if(choice == 2){
                 // 랭킹 확인 선택 시
                 System.out.println("랭킹은 다음과 같습니다.");
+                System.out.println("1번 게임 점수:");
+                System.out.println("2번 게임 점수:");
+                System.out.println("3번 게임 점수:");
+                System.out.println("4번 게임 점수:");
+                System.out.println("");
+                System.out.println("총 합산 점수:");
+                System.out.println("");
+                
             }
             else if(choice == 3){
                 // 종료하기 선택 시
