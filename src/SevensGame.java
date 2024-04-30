@@ -111,34 +111,38 @@ public class SevensGame {
     }
 
 
-    // 플레이어의 턴
-    private void playerTurn() {
-        System.out.println("\n플레이어의 턴 ");
-        player.displayHand();
+// 플레이어의 턴
+private void playerTurn() {
+    System.out.println("\n플레이어의 턴 ");
+    player.displayHand();
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("플레이할 카드 선택(또는 0장 뽑기): ");
-        int cardToPlay = scanner.nextInt();
+    Scanner scanner = new Scanner(System.in);
+    System.out.print("플레이할 카드 선택(또는 0장 뽑기): ");
+    int cardToPlay = scanner.nextInt();
 
-        if (cardToPlay == 0) {
-            if (playerDrawCount < MAX_DRAW_COUNT) {
-                drawCard(player);
-                System.out.println("플레이어가 카드를 뽑습니다.");
-                playerDrawCount++;
-            } else {
-                System.out.println("최대 드로우 한계에 도달했습니다.");
-            }
-        } else if (cardToPlay % 7 == 0) {
-            if (center.isEmpty() || cardToPlay > center.get(center.size() - 1)) {
-                player.removeCard(cardToPlay);
-                center.add(cardToPlay);
-            } else {
-                System.out.println("오류입니다! 이 카드는 사용할 수 없습니다.");
-            }
+    if (cardToPlay == 0) {
+        if (playerDrawCount < MAX_DRAW_COUNT) {
+            drawCard(player);
+            System.out.println("플레이어가 카드를 뽑습니다.");
+            playerDrawCount++;
         } else {
-            System.out.println("오류입니다! 7의 배수인 카드를 내야 합니다.");
+            System.out.println("최대 드로우 한계에 도달했습니다.");
         }
+    } else if (cardToPlay % 7 == 0) {
+        if (!player.getHand().contains(cardToPlay)) {
+            System.out.println("오류입니다! 손에 없는 카드를 선택하셨습니다.");
+        } else if (center.isEmpty() || cardToPlay > center.get(center.size() - 1)) {
+            player.removeCard(cardToPlay);
+            center.add(cardToPlay);
+            System.out.println("플레이어가 " + cardToPlay + "를 선택하여 제거하였습니다.");
+        } else {
+            System.out.println("오류입니다! 이 카드는 사용할 수 없습니다.");
+        }
+    } else {
+        System.out.println("오류입니다! 7의 배수인 카드를 내야 합니다.");
     }
+}
+
 
     // 컴퓨터의 턴
     private void computerTurn() {
