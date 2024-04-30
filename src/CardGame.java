@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class CardGame {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
+        // 응애
 
         System.out.println("카드 게임 랜드에 오신 것을 환영합니다!");
 
