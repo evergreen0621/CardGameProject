@@ -1,223 +1,329 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class OmahaPoker {
-    private static final int NUM_CARDS_PER_PLAYER = 4; // 각 플레이어에게 나눠지는 카드 수
+    private Deck deck;
+    private Player1 humanPlayer;
+    private Player1 computerPlayer;
+    private List<Card> communityCards;
 
-    public static void main(String[] args) {
-        // 카드 덱 생성
-        List<String> deck = createDeck();
-
-        // 카드 섞기
-        Collections.shuffle(deck);
-
-        // 플레이어와 컴퓨터에게 카드 나눠주기
-        List<String> playerCards = dealCards(deck, NUM_CARDS_PER_PLAYER);
-        List<String> computerCards = dealCards(deck, NUM_CARDS_PER_PLAYER);
-
-        // 카드 출력
-        System.out.println("플레이어의 카드: " + playerCards);
-        System.out.println("컴퓨터의 카드: " + computerCards);
-
-        // 플레이어의 최종 패 선택
-        selectPlayerHand(playerCards, deck);
-
-        // 컴퓨터의 최종 패 선택
-        selectComputerHand(computerCards, deck);
-
-        // 각 플레이어의 최종 패 분석
-        Map<String, String> playerHand = analyzeHand(playerCards);
-        Map<String, String> computerHand = analyzeHand(computerCards);
-
-        // 플레이어의 최종 패 출력
-        System.out.println("플레이어의 최종 패: " + playerHand.get("type") + " " + playerHand.get("rank"));
-        // 컴퓨터의 최종 패 출력
-        System.out.println("컴퓨터의 최종 패: " + computerHand.get("type") + " " + computerHand.get("rank"));
-
-        // 승부 결정
-        determineWinner(playerHand, computerHand);
+    public OmahaPoker() {
+        deck = new Deck();
+        humanPlayer = new Player1("플레이어");
+        computerPlayer = new Player1("컴퓨터");
+        communityCards = new ArrayList<>();
     }
 
-    // 카드 덱 생성
-    private static List<String> createDeck() {
-        List<String> deck = new ArrayList<>();
-        String[] suits = {"스페이드", "다이아몬드", "하트", "클로버"};
-        String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-        for (String suit : suits) {
-            for (String rank : ranks) {
-                deck.add(rank + " " + suit);
+    public void playGame() {
+        deck.shuffle();
+        dealCards();
+        showHands();
+        // 버릴 카드 선택 및 다시 뽑기
+        discardAndRedraw(humanPlayer);
+        // 컴퓨터가 자동으로 카드를 교환합니다.
+        computerAutomaticDraw();
+        determineWinner();
+    }
+
+    private void dealCards() {
+        humanPlayer.addCard(deck.drawCard());
+        humanPlayer.addCard(deck.drawCard());
+        computerPlayer.addCard(deck.drawCard());
+        computerPlayer.addCard(deck.drawCard());
+        for (int i = 0; i < 5; i++) {
+            communityCards.add(deck.drawCard());
+        }
+    }
+
+    private void showHands() {
+        System.out.println("플레이어의 패: " + humanPlayer.getHand());
+        System.out.println("공개 카드: " + communityCards);
+    }
+
+    private void discardAndRedraw(Player1 player) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("버릴 카드를 골라주세요. (e.g., 1 2):");
+        String input = scanner.nextLine();
+        String[] indices = input.split(" ");
+        List<Integer> discardIndices = new ArrayList<>();
+        for (String index : indices) {
+            discardIndices.add(Integer.parseInt(index) - 1);
+        }
+
+        // Remove discarded cards from hand
+        Collections.sort(discardIndices, Collections.reverseOrder());
+        for (int index : discardIndices) {
+            player.discardCard(index);
+        }
+
+        // Draw new cards
+        for (int i = 0; i < discardIndices.size(); i++) {
+            player.addCard(deck.drawCard());
+        }
+    }
+
+    private void computerAutomaticDraw() {
+        List<Card> currentHand = computerPlayer.getHand();
+        List<Card> newHand = new ArrayList<>(currentHand);
+
+        // 컴퓨터의 현재 패를 평가합니다.
+        HandRank currentRank = evaluateHand(currentHand, communityCards);
+
+        // 각 카드를 버려보고 새 카드를 뽑아서 평가합니다.
+        for (int i = 0; i < currentHand.size(); i++) {
+            List<Card> testHand = new ArrayList<>(currentHand);
+            testHand.remove(i); // 현재 카드를 제거합니다.
+            testHand.add(deck.drawCard()); // 새 카드를 뽑습니다.
+
+            HandRank testRank = evaluateHand(testHand, communityCards);
+
+            // 새 패가 더 좋은 경우에만 교환합니다.
+            if (testRank.compareTo(currentRank) > 0) {
+                newHand = testHand;
+                currentRank = testRank;
             }
         }
-        return deck;
+
+        // 새로운 패로 업데이트합니다.
+        computerPlayer.setHand(newHand);
     }
 
-    // 카드 나눠주기
-    private static List<String> dealCards(List<String> deck, int numCards) {
-        List<String> hand = new ArrayList<>();
-        for (int i = 0; i < numCards; i++) {
-            hand.add(deck.remove(0));
-        }
-        return hand;
-    }
+    private void determineWinner() {
+        HandRank humanRank = evaluateHand(humanPlayer.getHand(), communityCards);
+        HandRank computerRank = evaluateHand(computerPlayer.getHand(), communityCards);
 
-    // 플레이어의 최종 패 선택
-    private static void selectPlayerHand(List<String> playerCards, List<String> deck) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("플레이어의 카드 중 버릴 카드를 선택하세요 (예: 1 3): ");
-        String[] discardIndices = sc.nextLine().split(" ");
-        for (String indexStr : discardIndices) {
-            int index = Integer.parseInt(indexStr) - 1;
-            playerCards.set(index, deck.remove(0));
-        }
-        System.out.println("플레이어의 최종 패: " + playerCards);
-        sc.close();
-    }
+        System.out.println("플레이어의 패: " + humanRank + " - " + humanPlayer.getHand() + " + " + communityCards);
+        System.out.println("컴퓨터의 패: " + computerRank + " - " + computerPlayer.getHand() + " + " + communityCards);
 
-    // 컴퓨터의 최종 패 선택 (무작위로 선택)
-    private static void selectComputerHand(List<String> computerCards, List<String> deck) {
-        // 여기서는 간단히 무작위로 2장을 선택하도록 하겠습니다.
-        Collections.shuffle(deck);
-        computerCards.set(2, deck.remove(0));
-        computerCards.set(3, deck.remove(0));
-        System.out.println("컴퓨터의 최종 패: " + computerCards);
-    }
-
-    // 패 분석
-    private static Map<String, String> analyzeHand(List<String> cards) {
-        // 패를 분석하여 패의 종류와 강도를 반환합니다.
-        // 여기서는 간단히 원페어부터 포카드까지의 패만 고려하도록 하겠습니다.
-        // 패의 종류와 강도를 문자열로 반환합니다.
-        // 예: "type": "원페어", "rank": "10"
-
-        // 카드 숫자별 개수를 저장하는 Map 생성
-        Map<String, Integer> rankCount = new HashMap<>();
-        for (String card : cards) {
-            String rank = card.split(" ")[0];
-            rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
-        }
-
-        // 패 분석
-        if (rankCount.containsValue(4)) {
-            return Map.of("type", "포카드", "rank", Collections.max(rankCount.keySet()));
-        } else if (rankCount.containsValue(3) && rankCount.containsValue(2)) {
-            return Map.of("type", "풀하우스", "rank", Collections.max(rankCount.keySet()));
-        } else if (isFlush(cards)) {
-            return Map.of("type", "플러시", "rank", Collections.max(rankCount.keySet()));
-        } else if (isStraight(cards)) {
-            return Map.of("type", "스트레이트", "rank", Collections.max(rankCount.keySet()));
-        } else if (rankCount.containsValue(3)) {
-            return Map.of("type", "트리플", "rank", Collections.max(rankCount.keySet()));
-        } else if (Collections.frequency(rankCount.values(), 2) == 2) {
-            return Map.of("type", "투페어", "rank", getTwoPairRank(rankCount));
-        } else if (Collections.frequency(rankCount.values(), 2) == 1) {
-            return Map.of("type", "원페어", "rank", getOnePairRank(rankCount));
+        if (humanRank.compareTo(computerRank) > 0) {
+            System.out.println("당신의 승리입니다!");
+        } else if (humanRank.compareTo(computerRank) < 0) {
+            System.out.println("컴퓨터의 승리입니다!");
         } else {
-            return Map.of("type", "하이카드", "rank", getHighCardRank(cards));
-        }
-    }
-
-    // 투페어의 랭크 반환
-    private static String getTwoPairRank(Map<String, Integer> rankCount) {
-        List<String> pairs = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : rankCount.entrySet()) {
-            if (entry.getValue() == 2) {
-                pairs.add(entry.getKey());
-            }
-        }
-        Collections.sort(pairs);
-        return pairs.get(1); // 더 높은 페어의 랭크를 반환
-    }
-
-    // 원페어의 랭크 반환
-    private static String getOnePairRank(Map<String, Integer> rankCount) {
-        for (Map.Entry<String, Integer> entry : rankCount.entrySet()) {
-            if (entry.getValue() == 2) {
-                return entry.getKey(); // 페어의 랭크를 반환
-            }
-        }
-        return ""; // 예외 처리
-    }
-
-    // 하이카드의 랭크 반환
-    private static String getHighCardRank(List<String> cards) {
-        List<Integer> ranks = new ArrayList<>();
-        for (String card : cards) {
-            String rank = card.split(" ")[0];
-            ranks.add(getRankValue(rank));
-        }
-        Collections.sort(ranks);
-        return Integer.toString(ranks.get(ranks.size() - 1)); // 가장 높은 카드의 랭크를 반환
-    }
-
-    // 플러시 확인
-    private static boolean isFlush(List<String> cards) {
-        String suit = cards.get(0).split(" ")[1];
-        return cards.stream().allMatch(card -> card.split(" ")[1].equals(suit));
-    }
-
-    // 스트레이트 확인
-    private static boolean isStraight(List<String> cards) {
-        List<Integer> ranks = new ArrayList<>();
-        for (String card : cards) {
-            String rank = card.split(" ")[0];
-            ranks.add(getRankValue(rank));
-        }
-        Collections.sort(ranks);
-        return ranks.get(0) + 1 == ranks.get(1) &&
-                ranks.get(1) + 1 == ranks.get(2) &&
-                ranks.get(2) + 1 == ranks.get(3);
-    }
-
-    // 랭크 값 반환
-    private static int getRankValue(String rank) {
-        switch (rank) {
-            case "A": return 14;
-            case "K": return 13;
-            case "Q": return 12;
-            case "J": return 11;
-            default: return Integer.parseInt(rank);
-        }
-    }
-
-    // 승부 결정
-    private static void determineWinner(Map<String, String> playerHand, Map<String, String> computerHand) {
-        // 패의 종류와 강도를 비교하여 승자를 결정합니다.
-        // 각 패의 종류가 같은 경우에는 가장 높은 카드 숫자를 기준으로 승부를 결정합니다.
-        // 예: "원페어 10" vs "원페어 9" 일 때 "원페어 10"이 승리합니다.
-        // "하이카드"의 경우 가장 높은 카드의 숫자를 비교합니다.
-
-        // 패의 종류 비교
-        String[] playerHandType = playerHand.keySet().toArray(new String[0]);
-        String[] computerHandType = computerHand.keySet().toArray(new String[0]);
-
-        System.out.println("플레이어의 패 종류: " + playerHandType[0]);
-        System.out.println("컴퓨터의 패 종류: " + computerHandType[0]);
-
-        int compare = compareHandTypes(playerHandType[0], computerHandType[0]);
-        if (compare > 0) {
-            System.out.println("플레이어가 승리했습니다!");
-        } else if (compare < 0) {
-            System.out.println("컴퓨터가 승리했습니다!");
-        } else { // 패의 종류가 같을 경우 강도 비교
-            int playerRank = getRankValue(playerHand.get(playerHandType[0]).split(" ")[0]);
-            int computerRank = getRankValue(computerHand.get(computerHandType[0]).split(" ")[0]);
-            if (playerRank > computerRank) {
-                System.out.println("플레이어가 승리했습니다!");
-            } else if (playerRank < computerRank) {
-                System.out.println("컴퓨터가 승리했습니다!");
+            int result = compareHands(humanPlayer.getHand(), computerPlayer.getHand());
+            if (result > 0) {
+                System.out.println("당신의 승리입니다!");
+            } else if (result < 0) {
+                System.out.println("컴퓨터의 승리입니다!");
             } else {
                 System.out.println("무승부입니다!");
             }
         }
     }
 
-    // 패의 종류 비교
-    private static int compareHandTypes(String handType1, String handType2) {
-        List<String> handTypes = List.of("포카드", "풀하우스", "플러시", "스트레이트", "트리플", "투페어", "원페어", "하이카드");
-        return handTypes.indexOf(handType1) - handTypes.indexOf(handType2);
+    private int compareHands(List<Card> hand1, List<Card> hand2) {
+        Collections.sort(hand1, Comparator.comparing(Card::getRank).reversed());
+        Collections.sort(hand2, Comparator.comparing(Card::getRank).reversed());
+        
+        for (int i = 0; i < hand1.size(); i++) {
+            Rank rank1 = hand1.get(i).getRank();
+            Rank rank2 = hand2.get(i).getRank();
+            if (rank1.compareTo(rank2) != 0) {
+                return rank1.compareTo(rank2);
+            }
+        }
+        return 0;
     }
+
+    private HandRank evaluateHand(List<Card> hand, List<Card> communityCards) {
+        List<Card> allCards = new ArrayList<>(hand);
+        allCards.addAll(communityCards);
+        Collections.sort(allCards, Comparator.comparing(Card::getRank));
+
+        if (hasRoyalFlush(allCards)) return HandRank.ROYAL_FLUSH;
+        if (hasStraightFlush(allCards)) return HandRank.STRAIGHT_FLUSH;
+        if (hasFourOfAKind(allCards)) return HandRank.FOUR_OF_A_KIND;
+        if (hasFullHouse(allCards)) return HandRank.FULL_HOUSE;
+        if (hasFlush(allCards)) return HandRank.FLUSH;
+        if (hasStraight(allCards)) return HandRank.STRAIGHT;
+        if (hasThreeOfAKind(allCards)) return HandRank.THREE_OF_A_KIND;
+        if (hasTwoPair(allCards)) return HandRank.TWO_PAIR;
+        if (hasOnePair(allCards)) return HandRank.ONE_PAIR;
+        return HandRank.HIGH_CARD;
+    }
+
+    private boolean hasRoyalFlush(List<Card> allCards) {
+        return hasStraightFlush(allCards) && hasAce(allCards);
+    }
+
+    private boolean hasStraightFlush(List<Card> allCards) {
+        for (int i = 0; i <= allCards.size() - 5; i++) {
+            if (isFlush(allCards.subList(i, i + 5)) && isStraight(allCards.subList(i, i + 5))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasFourOfAKind(List<Card> allCards) {
+        Map<Rank, Integer> rankCount = getRankCount(allCards);
+        return rankCount.values().stream().anyMatch(count -> count == 4);
+    }
+
+    private boolean hasFullHouse(List<Card> allCards) {
+        Map<Rank, Integer> rankCount = getRankCount(allCards);
+        boolean hasThree = false;
+        boolean hasPair = false;
+        for (int count : rankCount.values()) {
+            if (count == 3) hasThree = true;
+            if (count == 2) hasPair = true;
+        }
+        return hasThree && hasPair;
+    }
+
+    private boolean hasFlush(List<Card> allCards) {
+        Map<Suit, Integer> suitCount = getSuitCount(allCards);
+        return suitCount.values().stream().anyMatch(count -> count >= 5);
+    }
+
+    private boolean hasStraight(List<Card> allCards) {
+        for (int i = 0; i <= allCards.size() - 5; i++) {
+            if (isStraight(allCards.subList(i, i + 5))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasThreeOfAKind(List<Card> allCards) {
+        Map<Rank, Integer> rankCount = getRankCount(allCards);
+        return rankCount.values().stream().anyMatch(count -> count == 3);
+    }
+
+    private boolean hasTwoPair(List<Card> allCards) {
+        Map<Rank, Integer> rankCount = getRankCount(allCards);
+        long pairCount = rankCount.values().stream().filter(count -> count == 2).count();
+        return pairCount >= 2;
+    }
+
+    private boolean hasOnePair(List<Card> allCards) {
+        Map<Rank, Integer> rankCount = getRankCount(allCards);
+        return rankCount.values().stream().anyMatch(count -> count == 2);
+    }
+
+    private Map<Rank, Integer> getRankCount(List<Card> cards) {
+        Map<Rank, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            Rank rank = card.getRank();
+            rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
+        }
+        return rankCount;
+    }
+
+    private Map<Suit, Integer> getSuitCount(List<Card> cards) {
+        Map<Suit, Integer> suitCount = new HashMap<>();
+        for (Card card : cards) {
+            Suit suit = card.getSuit();
+            suitCount.put(suit, suitCount.getOrDefault(suit, 0) + 1);
+        }
+        return suitCount;
+    }
+
+    private boolean isFlush(List<Card> cards) {
+        Suit suit = cards.get(0).getSuit();
+        return cards.stream().allMatch(card -> card.getSuit() == suit);
+    }
+
+    private boolean isStraight(List<Card> cards) {
+        for (int i = 0; i < cards.size() - 1; i++) {
+            if (cards.get(i).getRank().ordinal() + 1 != cards.get(i + 1).getRank().ordinal()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean hasAce(List<Card> cards) {
+        return cards.stream().anyMatch(card -> card.getRank() == Rank.ACE);
+    }
+
+    public static void main(String[] args) throws Exception{
+        OmahaPoker game = new OmahaPoker();
+        game.playGame();
+    }
+}
+
+class Player1 {
+    private String name;
+    private List<Card> hand;
+
+    public Player1(String name) {
+        this.name = name;
+        hand = new ArrayList<>();
+    }
+
+    public void addCard(Card card) {
+        hand.add(card);
+    }
+
+    public void discardCard(int index) {
+        hand.remove(index);
+    }
+
+    public List<Card> getHand() {
+        return hand;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setHand(List<Card> newHand) {
+        hand = newHand;
+    }
+}
+
+class Deck {
+    private List<Card> cards;
+
+    public Deck() {
+        cards = new ArrayList<>();
+        for (Suit suit : Suit.values()) {
+            for (Rank rank : Rank.values()) {
+                cards.add(new Card(rank, suit));
+            }
+        }
+    }
+
+    public void shuffle() {
+        Collections.shuffle(cards);
+    }
+
+    public Card drawCard() {
+        return cards.remove(0);
+    }
+}
+
+class Card {
+    private Rank rank;
+    private Suit suit;
+
+    public Card(Rank rank, Suit suit) {
+        this.rank = rank;
+        this.suit = suit;
+    }
+
+    public Rank getRank() {
+        return rank;
+    }
+
+    public Suit getSuit() {
+        return suit;
+    }
+
+    @Override
+    public String toString() {
+        return rank + " of " + suit;
+    }
+}
+
+enum Rank {
+    TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE
+}
+
+enum Suit {
+    HEARTS, DIAMONDS, CLUBS, SPADES
+}
+
+enum HandRank {
+    HIGH_CARD, ONE_PAIR, TWO_PAIR, THREE_OF_A_KIND, STRAIGHT, FLUSH, FULL_HOUSE, FOUR_OF_A_KIND, STRAIGHT_FLUSH, ROYAL_FLUSH
 }
