@@ -41,7 +41,7 @@ public class OmahaPoker {
 
     private void discardAndRedraw(Player1 player) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("버릴 카드를 골라주세요. (e.g., 1 2):");
+        System.out.print("버릴 카드를 골라주세요. (e.g., 1 2): ");
         String input = scanner.nextLine();
         String[] indices = input.split(" ");
         List<Integer> discardIndices = new ArrayList<>();
