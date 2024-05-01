@@ -46,21 +46,24 @@ public class OmahaPoker {
         Scanner scanner = new Scanner(System.in);
         System.out.print("버릴 카드를 골라주세요. (e.g., 1 2): ");
         String input = scanner.nextLine(); // 사용자 입력 받기
-        String[] indices = input.split(" "); // 입력된 숫자들을 공백을 기준으로 나눠 배열에 저장
-        List<Integer> discardIndices = new ArrayList<>();
-        for (String index : indices) {
-            discardIndices.add(Integer.parseInt(index) - 1); // 입력된 숫자들을 정수형으로 변환하여 리스트에 추가
-        }
+        if(input.equals("")){}
+        else{
+            String[] indices = input.split(" "); // 입력된 숫자들을 공백을 기준으로 나눠 배열에 저장
+            List<Integer> discardIndices = new ArrayList<>();
+            for (String index : indices) {
+                discardIndices.add(Integer.parseInt(index) - 1); // 입력된 숫자들을 정수형으로 변환하여 리스트에 추가
+            }
 
-        // 선택된 카드 버리기
-        Collections.sort(discardIndices, Collections.reverseOrder());
-        for (int index : discardIndices) {
-            player.discardCard(index);
-        }
+            // 선택된 카드 버리기
+            Collections.sort(discardIndices, Collections.reverseOrder());
+            for (int index : discardIndices) {
+                player.discardCard(index);
+            }
 
-        // 새로운 카드 뽑기
-        for (int i = 0; i < discardIndices.size(); i++) {
-            player.addCard(deck.drawCard());
+            // 새로운 카드 뽑기
+            for (int i = 0; i < discardIndices.size(); i++) {
+                player.addCard(deck.drawCard());
+            }
         }
     }
 
@@ -139,15 +142,15 @@ public class OmahaPoker {
         Collections.sort(allCards, Comparator.comparing(Card::getRank));
 
         if (hasRoyalFlush(allCards)) return HandRank.ROYAL_FLUSH;
-        if (hasStraightFlush(allCards)) return HandRank.STRAIGHT_FLUSH;
-        if (hasFourOfAKind(allCards)) return HandRank.FOUR_OF_A_KIND;
-        if (hasFullHouse(allCards)) return HandRank.FULL_HOUSE;
-        if (hasFlush(allCards)) return HandRank.FLUSH;
-        if (hasStraight(allCards)) return HandRank.STRAIGHT;
-        if (hasThreeOfAKind(allCards)) return HandRank.THREE_OF_A_KIND;
-        if (hasTwoPair(allCards)) return HandRank.TWO_PAIR;
-        if (hasOnePair(allCards)) return HandRank.ONE_PAIR;
-        return HandRank.HIGH_CARD;
+        else if (hasStraightFlush(allCards)) return HandRank.STRAIGHT_FLUSH;
+        else if (hasFourOfAKind(allCards)) return HandRank.FOUR_OF_A_KIND;
+        else if (hasFullHouse(allCards)) return HandRank.FULL_HOUSE;
+        else if (hasFlush(allCards)) return HandRank.FLUSH;
+        else if (hasStraight(allCards)) return HandRank.STRAIGHT;
+        else if (hasThreeOfAKind(allCards)) return HandRank.THREE_OF_A_KIND;
+        else if (hasTwoPair(allCards)) return HandRank.TWO_PAIR;
+        else if (hasOnePair(allCards)) return HandRank.ONE_PAIR;
+        else return HandRank.HIGH_CARD;
     }
 
     // 로열 플러시 판단 메서드
