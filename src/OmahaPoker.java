@@ -350,7 +350,34 @@ class Card {
     // 카드 정보 문자열 반환 메서드
     @Override
     public String toString() {
-        return rank + " of " + suit;
+        String rankStr;
+        switch (rank) {
+            case TWO: rankStr = "2"; break;
+            case THREE: rankStr = "3"; break;
+            case FOUR: rankStr = "4"; break;
+            case FIVE: rankStr = "5"; break;
+            case SIX: rankStr = "6"; break;
+            case SEVEN: rankStr = "7"; break;
+            case EIGHT: rankStr = "8"; break;
+            case NINE: rankStr = "9"; break;
+            case TEN: rankStr = "10"; break;
+            case JACK: rankStr = "J"; break;
+            case QUEEN: rankStr = "Q"; break;
+            case KING: rankStr = "K"; break;
+            case ACE: rankStr = "A"; break;
+            default: rankStr = ""; break; // 예외 처리
+        }
+
+        String suitStr;
+        switch (suit) {
+            case HEARTS: suitStr = "하트"; break;
+            case DIAMONDS: suitStr = "다이아몬드"; break;
+            case CLUBS: suitStr = "클로버"; break;
+            case SPADES: suitStr = "스페이드"; break;
+            default: suitStr = ""; break; // 예외 처리
+        }
+
+        return rankStr + " " + suitStr;
     }
 }
 
