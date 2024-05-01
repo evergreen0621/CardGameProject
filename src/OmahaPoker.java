@@ -1,69 +1,73 @@
 import java.util.*;
 
 public class OmahaPoker {
-    private Deck deck;
-    private Player1 humanPlayer;
-    private Player1 computerPlayer;
-    private List<Card> communityCards;
+    private Deck deck; // 카드 덱
+    private Player1 humanPlayer; // 사용자 플레이어
+    private Player1 computerPlayer; // 컴퓨터 플레이어
+    private List<Card> communityCards; // 공통 카드(테이블에 나온 카드)
 
+    // OmahaPoker 클래스 생성자
     public OmahaPoker() {
-        deck = new Deck();
-        humanPlayer = new Player1("플레이어");
-        computerPlayer = new Player1("컴퓨터");
-        communityCards = new ArrayList<>();
+        deck = new Deck(); // 새로운 카드 덱 생성
+        humanPlayer = new Player1("플레이어"); // 사용자 플레이어 생성
+        computerPlayer = new Player1("컴퓨터"); // 컴퓨터 플레이어 생성
+        communityCards = new ArrayList<>(); // 공통 카드 리스트 생성
     }
 
+    // 게임 실행 메서드
     public void playGame() {
-        deck.shuffle();
-        dealCards();
-        showHands();
-        // 버릴 카드 선택 및 다시 뽑기
-        discardAndRedraw(humanPlayer);
-        // 컴퓨터가 자동으로 카드를 교환합니다.
-        computerAutomaticDraw();
-        determineWinner();
+        deck.shuffle(); // 카드 섞기
+        dealCards(); // 카드 나눠주기
+        showHands(); // 카드 보여주기
+        discardAndRedraw(humanPlayer); // 사용자가 카드 선택하고 새로 뽑기
+        computerAutomaticDraw(); // 컴퓨터가 자동으로 카드 선택하고 새로 뽑기
+        determineWinner(); // 승자 결정하기
     }
 
+    // 카드 나눠주는 메서드
     private void dealCards() {
-        humanPlayer.addCard(deck.drawCard());
-        humanPlayer.addCard(deck.drawCard());
-        computerPlayer.addCard(deck.drawCard());
-        computerPlayer.addCard(deck.drawCard());
-        for (int i = 0; i < 5; i++) {
+        humanPlayer.addCard(deck.drawCard()); // 사용자에게 카드 나눠주기
+        humanPlayer.addCard(deck.drawCard()); // 사용자에게 카드 나눠주기
+        computerPlayer.addCard(deck.drawCard()); // 컴퓨터에게 카드 나눠주기
+        computerPlayer.addCard(deck.drawCard()); // 컴퓨터에게 카드 나눠주기
+        for (int i = 0; i < 5; i++) { // 공통 카드(테이블에 나온 카드) 나눠주기
             communityCards.add(deck.drawCard());
         }
     }
 
+    // 카드 보여주는 메서드
     private void showHands() {
-        System.out.println("플레이어의 패: " + humanPlayer.getHand());
-        System.out.println("공개 카드: " + communityCards);
+        System.out.println("플레이어의 패: " + humanPlayer.getHand()); // 사용자의 카드 보여주기
+        System.out.println("공개 카드: " + communityCards); // 공개 카드(테이블에 나온 카드) 보여주기
     }
 
+    // 사용자가 카드 선택하고 새로 뽑는 메서드
     private void discardAndRedraw(Player1 player) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("버릴 카드를 골라주세요. (e.g., 1 2): ");
-        String input = scanner.nextLine();
-        String[] indices = input.split(" ");
+        String input = scanner.nextLine(); // 사용자 입력 받기
+        String[] indices = input.split(" "); // 입력된 숫자들을 공백을 기준으로 나눠 배열에 저장
         List<Integer> discardIndices = new ArrayList<>();
         for (String index : indices) {
-            discardIndices.add(Integer.parseInt(index) - 1);
+            discardIndices.add(Integer.parseInt(index) - 1); // 입력된 숫자들을 정수형으로 변환하여 리스트에 추가
         }
 
-        // Remove discarded cards from hand
+        // 선택된 카드 버리기
         Collections.sort(discardIndices, Collections.reverseOrder());
         for (int index : discardIndices) {
             player.discardCard(index);
         }
 
-        // Draw new cards
+        // 새로운 카드 뽑기
         for (int i = 0; i < discardIndices.size(); i++) {
             player.addCard(deck.drawCard());
         }
     }
 
+    // 컴퓨터가 자동으로 카드 선택하고 새로 뽑는 메서드
     private void computerAutomaticDraw() {
-        List<Card> currentHand = computerPlayer.getHand();
-        List<Card> newHand = new ArrayList<>(currentHand);
+        List<Card> currentHand = computerPlayer.getHand(); // 컴퓨터의 현재 카드
+        List<Card> newHand = new ArrayList<>(currentHand); // 새로운 카드를 저장할 리스트
 
         // 컴퓨터의 현재 패를 평가합니다.
         HandRank currentRank = evaluateHand(currentHand, communityCards);
@@ -87,13 +91,16 @@ public class OmahaPoker {
         computerPlayer.setHand(newHand);
     }
 
+    // 승자를 결정하는 메서드
     private void determineWinner() {
-        HandRank humanRank = evaluateHand(humanPlayer.getHand(), communityCards);
-        HandRank computerRank = evaluateHand(computerPlayer.getHand(), communityCards);
+        HandRank humanRank = evaluateHand(humanPlayer.getHand(), communityCards); // 사용자의 패 평가
+        HandRank computerRank = evaluateHand(computerPlayer.getHand(), communityCards); // 컴퓨터의 패 평가
 
+        // 각 플레이어의 패 출력
         System.out.println("플레이어의 패: " + humanRank + " - " + humanPlayer.getHand() + " + " + communityCards);
         System.out.println("컴퓨터의 패: " + computerRank + " - " + computerPlayer.getHand() + " + " + communityCards);
 
+        // 승자 출력
         if (humanRank.compareTo(computerRank) > 0) {
             System.out.println("당신의 승리입니다!");
         } else if (humanRank.compareTo(computerRank) < 0) {
@@ -110,10 +117,11 @@ public class OmahaPoker {
         }
     }
 
+    // 카드 비교 메서드
     private int compareHands(List<Card> hand1, List<Card> hand2) {
         Collections.sort(hand1, Comparator.comparing(Card::getRank).reversed());
         Collections.sort(hand2, Comparator.comparing(Card::getRank).reversed());
-        
+
         for (int i = 0; i < hand1.size(); i++) {
             Rank rank1 = hand1.get(i).getRank();
             Rank rank2 = hand2.get(i).getRank();
@@ -124,6 +132,7 @@ public class OmahaPoker {
         return 0;
     }
 
+    // 패를 평가하는 메서드
     private HandRank evaluateHand(List<Card> hand, List<Card> communityCards) {
         List<Card> allCards = new ArrayList<>(hand);
         allCards.addAll(communityCards);
@@ -141,10 +150,12 @@ public class OmahaPoker {
         return HandRank.HIGH_CARD;
     }
 
+    // 로열 플러시 판단 메서드
     private boolean hasRoyalFlush(List<Card> allCards) {
         return hasStraightFlush(allCards) && hasAce(allCards);
     }
 
+    // 스트레이트 플러시 판단 메서드
     private boolean hasStraightFlush(List<Card> allCards) {
         for (int i = 0; i <= allCards.size() - 5; i++) {
             if (isFlush(allCards.subList(i, i + 5)) && isStraight(allCards.subList(i, i + 5))) {
@@ -154,11 +165,13 @@ public class OmahaPoker {
         return false;
     }
 
+    // 포카드 판단 메서드
     private boolean hasFourOfAKind(List<Card> allCards) {
         Map<Rank, Integer> rankCount = getRankCount(allCards);
         return rankCount.values().stream().anyMatch(count -> count == 4);
     }
 
+    // 풀하우스 판단 메서드
     private boolean hasFullHouse(List<Card> allCards) {
         Map<Rank, Integer> rankCount = getRankCount(allCards);
         boolean hasThree = false;
@@ -170,11 +183,13 @@ public class OmahaPoker {
         return hasThree && hasPair;
     }
 
+    // 플러시 판단 메서드
     private boolean hasFlush(List<Card> allCards) {
         Map<Suit, Integer> suitCount = getSuitCount(allCards);
         return suitCount.values().stream().anyMatch(count -> count >= 5);
     }
 
+    // 스트레이트 판단 메서드
     private boolean hasStraight(List<Card> allCards) {
         for (int i = 0; i <= allCards.size() - 5; i++) {
             if (isStraight(allCards.subList(i, i + 5))) {
@@ -184,22 +199,26 @@ public class OmahaPoker {
         return false;
     }
 
+    // 쓰리 카드 판단 메서드
     private boolean hasThreeOfAKind(List<Card> allCards) {
         Map<Rank, Integer> rankCount = getRankCount(allCards);
         return rankCount.values().stream().anyMatch(count -> count == 3);
     }
 
+    // 투페어 판단 메서드
     private boolean hasTwoPair(List<Card> allCards) {
         Map<Rank, Integer> rankCount = getRankCount(allCards);
         long pairCount = rankCount.values().stream().filter(count -> count == 2).count();
         return pairCount >= 2;
     }
 
+    // 원 페어 판단 메서드
     private boolean hasOnePair(List<Card> allCards) {
         Map<Rank, Integer> rankCount = getRankCount(allCards);
         return rankCount.values().stream().anyMatch(count -> count == 2);
     }
 
+    // 카드 랭크 카운트 메서드
     private Map<Rank, Integer> getRankCount(List<Card> cards) {
         Map<Rank, Integer> rankCount = new HashMap<>();
         for (Card card : cards) {
@@ -209,6 +228,7 @@ public class OmahaPoker {
         return rankCount;
     }
 
+    // 카드 슈트 카운트 메서드
     private Map<Suit, Integer> getSuitCount(List<Card> cards) {
         Map<Suit, Integer> suitCount = new HashMap<>();
         for (Card card : cards) {
@@ -218,11 +238,13 @@ public class OmahaPoker {
         return suitCount;
     }
 
+    // 플러시 판단 메서드
     private boolean isFlush(List<Card> cards) {
         Suit suit = cards.get(0).getSuit();
         return cards.stream().allMatch(card -> card.getSuit() == suit);
     }
 
+    // 스트레이트 판단 메서드
     private boolean isStraight(List<Card> cards) {
         for (int i = 0; i < cards.size() - 1; i++) {
             if (cards.get(i).getRank().ordinal() + 1 != cards.get(i + 1).getRank().ordinal()) {
@@ -232,49 +254,55 @@ public class OmahaPoker {
         return true;
     }
 
+    // 에이스 판단 메서드
     private boolean hasAce(List<Card> cards) {
         return cards.stream().anyMatch(card -> card.getRank() == Rank.ACE);
     }
 
-    public static void main(String[] args) throws Exception{
+    // 메인 메서드
+    public static void main(String[] args) throws Exception {
         OmahaPoker game = new OmahaPoker();
         game.playGame();
     }
 }
 
+// 플레이어 클래스
 class Player1 {
-    private String name;
-    private List<Card> hand;
+    private String name; // 플레이어 이름
+    private List<Card> hand; // 플레이어의 손에 있는 카드
 
+    // Player1 클래스 생성자
     public Player1(String name) {
         this.name = name;
         hand = new ArrayList<>();
     }
 
+    // 카드 추가 메서드
     public void addCard(Card card) {
         hand.add(card);
     }
 
+    // 카드 제거 메서드
     public void discardCard(int index) {
         hand.remove(index);
     }
 
+    // 손에 있는 카드 반환 메서드
     public List<Card> getHand() {
         return hand;
     }
 
-    public String getName() {
-        return name;
-    }
-
+    // 손에 있는 카드 설정 메서드
     public void setHand(List<Card> newHand) {
         hand = newHand;
     }
 }
 
+// 카드 덱 클래스
 class Deck {
-    private List<Card> cards;
+    private List<Card> cards; // 카드 리스트
 
+    // Deck 클래스 생성자
     public Deck() {
         cards = new ArrayList<>();
         for (Suit suit : Suit.values()) {
@@ -284,46 +312,56 @@ class Deck {
         }
     }
 
+    // 카드 섞는 메서드
     public void shuffle() {
         Collections.shuffle(cards);
     }
 
+    // 카드 뽑는 메서드
     public Card drawCard() {
         return cards.remove(0);
     }
 }
 
+// 카드 클래스
 class Card {
-    private Rank rank;
-    private Suit suit;
+    private Rank rank; // 카드 랭크
+    private Suit suit; // 카드 슈트
 
+    // Card 클래스 생성자
     public Card(Rank rank, Suit suit) {
         this.rank = rank;
         this.suit = suit;
     }
 
+    // 랭크 반환 메서드
     public Rank getRank() {
         return rank;
     }
 
+    // 슈트 반환 메서드
     public Suit getSuit() {
         return suit;
     }
 
+    // 카드 정보 문자열 반환 메서드
     @Override
     public String toString() {
         return rank + " of " + suit;
     }
 }
 
+// 카드 랭크 열거형
 enum Rank {
     TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE
 }
 
+// 카드 슈트 열거형
 enum Suit {
     HEARTS, DIAMONDS, CLUBS, SPADES
 }
 
+// 패 랭크 열거형
 enum HandRank {
     HIGH_CARD, ONE_PAIR, TWO_PAIR, THREE_OF_A_KIND, STRAIGHT, FLUSH, FULL_HOUSE, FOUR_OF_A_KIND, STRAIGHT_FLUSH, ROYAL_FLUSH
 }
