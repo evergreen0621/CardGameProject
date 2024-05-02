@@ -84,6 +84,18 @@ public class SevensGame {
         // 게임 종료 후 승자를 출력
         Player winner = findWinner();
         System.out.println("게임 종료! " + winner.getName() + " 승리!");
+        if(winner.getName()=="플레이어"){
+            System.out.println("최종 승자는 당신입니다!");
+            WinLose.winlose = 1;
+        }
+        else if(winner.getName()=="컴퓨터"){
+            System.out.println("최종 승자는 컴퓨터입니다!");
+            WinLose.winlose = 0;
+        }
+        else{
+            System.out.println("최종 승자는 없습니다!");
+            WinLose.winlose = 2;
+        }
     }
 
     // 카드를 나눠줌
