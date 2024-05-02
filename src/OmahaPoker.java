@@ -106,16 +106,21 @@ public class OmahaPoker {
         // 승자 출력
         if (humanRank.compareTo(computerRank) > 0) {
             System.out.println("당신의 승리입니다!");
+            WinLose.winlose = 1;
         } else if (humanRank.compareTo(computerRank) < 0) {
             System.out.println("컴퓨터의 승리입니다!");
+            WinLose.winlose = 0;
         } else {
             int result = compareHands(humanPlayer.getHand(), computerPlayer.getHand());
             if (result > 0) {
                 System.out.println("당신의 승리입니다!");
+                WinLose.winlose = 1;
             } else if (result < 0) {
                 System.out.println("컴퓨터의 승리입니다!");
+                WinLose.winlose = 0;
             } else {
                 System.out.println("무승부입니다!");
+                WinLose.winlose = 2;
             }
         }
     }
