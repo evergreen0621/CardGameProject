@@ -1,11 +1,13 @@
 import java.util.*;
 
 public class SpiderSolitaire {
-    private static final int NUM_BUILDS = 8;
-    private static final int NUM_SUITS = 4;
+    private static final int NUM_BUILDS = 10; // 총 10줄
+    private static final int[] CARDS_PER_LINE = {6, 6, 6, 6, 5, 5, 5, 5, 5, 5}; // 각 줄별 카드 수
+
+    private static final int NUM_SUITS = 2; // 두 개의 슈트만 사용 (하트와 스페이드)
     private static final int NUM_RANKS = 13;
 
-    private List<Stack<Card>> builds; // 8개의 빌드
+    private List<Stack<Card>> builds; // 10줄의 빌드
     private List<Card> deck; // 카드 덱
 
     // 카드 클래스
@@ -20,7 +22,7 @@ public class SpiderSolitaire {
 
         // 카드를 문자열로 반환 (예: "6♠")
         public String toString() {
-            String[] suits = {"♠", "♥", "♦", "♣"};
+            String[] suits = {"♥ |", "♣ |"}; // 하트와 클로버만 사용
             return rank + suits[suit];
         }
     }
@@ -36,8 +38,10 @@ public class SpiderSolitaire {
     private void initializeDeck() {
         deck = new ArrayList<>();
         for (int suit = 0; suit < NUM_SUITS; suit++) {
-            for (int rank = 1; rank <= NUM_RANKS; rank++) {
-                deck.add(new Card(rank, suit));
+            for (int i = 0; i < NUM_BUILDS; i++) {
+                for (int j = 0; j < CARDS_PER_LINE[i]; j++) {
+                    deck.add(new Card(j + 1, suit));
+                }
             }
         }
     }
@@ -47,15 +51,20 @@ public class SpiderSolitaire {
         Collections.shuffle(deck);
     }
 
-    // 8개의 빌드 초기화
+    // 10줄의 빌드 초기화
     private void initializeBuilds() {
         builds = new ArrayList<>();
         for (int i = 0; i < NUM_BUILDS; i++) {
             builds.add(new Stack<>());
         }
+        int totalCards = 0;
         for (int i = 0; i < NUM_BUILDS; i++) {
-            for (int j = 0; j < 6; j++) { // 각 빌드에 6장의 카드 배치
+            for (int j = 0; j < CARDS_PER_LINE[i]; j++) {
+                if (totalCards >= deck.size()) {
+                    break;
+                }
                 builds.get(i).push(deck.remove(deck.size() - 1));
+                totalCards++;
             }
         }
     }
@@ -65,12 +74,31 @@ public class SpiderSolitaire {
         Scanner scanner = new Scanner(System.in);
         while (!isGameOver()) {
             displayBuilds();
-            System.out.print("이동할 카드 선택 (예: 2 5): ");
-            int fromBuild = scanner.nextInt() - 1;
-            int toBuild = scanner.nextInt() - 1;
-            moveCard(fromBuild, toBuild);
+            System.out.println("\n카드 추가: 'a', 종료: 'q'");
+            System.out.println("ex. 2번째 줄에서 5번째 줄로 2장 이동 : 2 5 3");
+            System.out.print("이동할 카드를 입력하세요. : ");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("q")) {
+                break;
+            } else if (input.equalsIgnoreCase("a")) {
+                addRandomCard();
+            } else {
+                String[] tokens = input.split(" ");
+                if (tokens.length == 3) {
+                    try {
+                        int fromBuild = Integer.parseInt(tokens[0]) - 1;
+                        int toBuild = Integer.parseInt(tokens[1]) - 1;
+                        int numCards = Integer.parseInt(tokens[2]);
+                        moveCard(fromBuild, toBuild, numCards);
+                    } catch (NumberFormatException e) {
+                        System.out.println("잘못된 입력입니다!");
+                    }
+                } else {
+                    System.out.println("잘못된 입력입니다!");
+                }
+            }
         }
-        System.out.println("게임 승리!");
+        System.out.println("게임 종료!");
     }
 
     // 빌드 출력
@@ -78,29 +106,58 @@ public class SpiderSolitaire {
         for (int i = 0; i < NUM_BUILDS; i++) {
             System.out.print((i + 1) + ": ");
             Stack<Card> build = builds.get(i);
-            if (!build.isEmpty()) {
-                for (Card card : build) {
-                    System.out.print(card + " ");
-                }
+            for (Card card : build) {
+                System.out.print(card + " ");
             }
             System.out.println();
         }
     }
 
     // 카드 이동
-    private void moveCard(int fromBuild, int toBuild) {
+    private void moveCard(int fromBuild, int toBuild, int numCards) {
+        if (fromBuild < 0 || fromBuild >= NUM_BUILDS || toBuild < 0 || toBuild >= NUM_BUILDS) {
+            System.out.println("잘못된 빌드 번호입니다!");
+            return;
+        }
         Stack<Card> from = builds.get(fromBuild);
         Stack<Card> to = builds.get(toBuild);
-        if (!from.isEmpty() && !to.isEmpty()) {
+        if (from.isEmpty()) {
+            System.out.println("이동할 카드가 없습니다!");
+            return;
+        }
+        if (numCards <= 0 || numCards > from.size()) {
+            System.out.println("잘못된 카드 개수입니다!");
+            return;
+        }
+        for (int i = 0; i < numCards; i++) {
             Card fromCard = from.peek();
-            Card toCard = to.peek();
-            if (fromCard.rank == toCard.rank - 1 && fromCard.suit == toCard.suit) {
-                to.push(from.pop());
-            } else {
-                System.out.println("잘못된 이동입니다!");
+            Card toCard = to.isEmpty() ? null : to.peek();
+            if (toCard == null && fromCard.rank == NUM_RANKS) {
+                System.out.println("이동할 수 없는 위치입니다!");
+                return;
             }
-        } else {
-            System.out.println("잘못된 이동입니다!");
+            if (toCard != null && (fromCard.rank != toCard.rank - 1 || fromCard.suit != toCard.suit)) {
+                System.out.println("잘못된 이동입니다!");
+                return;
+            }
+            to.push(from.pop());
+        }
+    }
+
+    // 랜덤 카드 추가
+    private void addRandomCard() {
+        if (deck.isEmpty()) {
+            System.out.println("더 이상 추가할 카드가 없습니다!");
+            return;
+        }
+        for (Stack<Card> build : builds) {
+            if (!deck.isEmpty()) {
+                Card randomCard = deck.remove(deck.size() - 1);
+                build.push(randomCard);
+            } else {
+                System.out.println("더 이상 추가할 카드가 없습니다!");
+                return;
+            }
         }
     }
 
