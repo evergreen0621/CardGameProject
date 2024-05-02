@@ -19,7 +19,7 @@ public class CardGame {
             if(choice == 1){
                 // 게임하기 선택 시
                 while(true){
-                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다.\n어떤 게임을 하시겠습니까?\n1. 카지노 워\n2. 오마하 포커\n3. 업다운 카드게임\n4. Sevens\n5. 스파이더 카드 게임\n6. 야구 카드게임");
+                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다.\n어떤 게임을 하시겠습니까?\n1. 카지노 워 (Casino War)\n2. 업 다운 (Up & Down) \n3. 세븐 (Sevens7) \n4. 오마하 포커 (Omaha Poker) \n5. 숫자야구 (Baseball Game)\n6. 스파이더 솔리테어 (Spider Solitaire)\n");
                 
                     int gamechoice = sc.nextInt();
 
@@ -30,32 +30,34 @@ public class CardGame {
                         break;
                     }
                     else if(gamechoice == 2){
-                        System.out.println("오마하 포커 카드게임이 시작됩니다 !!");
-                        OmahaPoker.main(args);
+                        System.out.println(" 업다운 카드게임이 시작됩니다 !!");
+                        UpDownCardGame.main(args);
+                        
                         // 2번 게임 선택 시
                         break;
                     }
                     else if(gamechoice == 3){
-                        System.out.println(" 업다운 카드게임이 시작됩니다 !!");
-                        UpDownCardGame.main(args);
-                        // 3번 게임 선택 시
-                        break;
-                    }
-                    else if(gamechoice == 4){
                         System.out.println("Sevens 카드게임이 시작됩니다 !!");
                         SevensGame.main(args);
                         // 3번 게임 선택 시
                         break;
                     }
+                    else if(gamechoice == 4){
+                        System.out.println("오마하 포커 카드게임이 시작됩니다 !!");
+                        OmahaPoker.main(args);
+                        // 3번 게임 선택 시
+                        break;
+                    }
                     else if(gamechoice == 5){
-                        System.out.println("스파이더 카드게임이 시작됩니다 !!");
-                        SpiderSolitaire.main(args);
+                        System.out.println("야구 카드게임이 시작됩니다 !!");
+                        BaseballGame.main(args);
                         // 3번 게임 선택 시
                         break;
                     }
                     else if(gamechoice == 6){
-                        System.out.println("야구 카드게임이 시작됩니다 !!");
-                        BaseballGame.main(args);
+                        
+                        System.out.println("스파이더 솔리테어 게임이 시작됩니다 !!");
+                        SpiderSolitaire.main(args);
                         // 3번 게임 선택 시
                         break;
                     }
@@ -68,10 +70,13 @@ public class CardGame {
             else if(choice == 2){
                 // 랭킹 확인 선택 시
                 System.out.println("랭킹은 다음과 같습니다.");
-                System.out.println("1번 게임 점수:");
-                System.out.println("2번 게임 점수:");
-                System.out.println("3번 게임 점수:");
-                System.out.println("4번 게임 점수:");
+                System.out.println("1번 게임 결과:");
+                System.out.println("2번 게임 결과:");
+                System.out.println("3번 게임 결과:");
+                System.out.println("4번 게임 결과:");
+                System.out.println("5번 게임 결과:");
+                System.out.println("6번 게임 결과:");
+                
                 System.out.println("");
                 System.out.println("총 합산 점수:");
                 System.out.println("");
