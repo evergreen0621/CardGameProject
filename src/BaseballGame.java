@@ -47,7 +47,7 @@ public class BaseballGame extends GameIntroduction{
                 WinLose.winlose = 1;
             } else {
                 System.out.println("스트~라이크 : " + strikes + ", 볼.. : " + balls);
-                System.out.println("다시 맞춰보세요!! (남은 시도 횟수: " + (MAX_ATTEMPTS - attempts) + ")\n");
+                System.out.println("다시 맞춰보세요!! (남은 시도 횟수 : " + (MAX_ATTEMPTS - attempts) + ")\n");
             }
         }
 

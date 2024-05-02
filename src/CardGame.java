@@ -27,7 +27,7 @@ public class CardGame {
             if(choice == 1){
                 // 게임하기 선택 시
                 while(true){
-                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다.\n어떤 게임을 하시겠습니까?\n1. 카지노 워 (Casino War)\n2. 업 다운 (Up & Down) \n3. 세븐 (Sevens7) \n4. 오마하 포커 (Omaha Poker) \n5. 숫자야구 (Baseball Game)\n6. 스파이더 솔리테어 (Spider Solitaire)");
+                    System.out.println("지금 플레이하실 수 있는 게임들은 다음과 같습니다.\n어떤 게임을 하시겠습니까?\n1레벨. 카지노 워 (Casino War)\n2레벨. 업 다운 (Up & Down) \n3레벨. 세븐 (Sevens7) \n4레벨. 오마하 포커 (Omaha Poker) \n5레벨. 숫자야구 (Baseball Game)\n6레벨. 스파이더 솔리테어 (Spider Solitaire)");
                 
                     int gamechoice = sc.nextInt();
 
@@ -131,16 +131,21 @@ public class CardGame {
                 // 랭킹 확인 선택 시
                 totalScore = score1 + score2 + score3 + score4 + score5 + score6;
 
+                System.out.println("각 게임에서의 점수 기준은 다음과 같습니다.");
+                System.err.println("승리 시 : 레벨 * 10");
+                System.out.println("패배 시 : 레벨 * 10");
+                System.out.println("무승부 시 : 레벨 * 5");
+                System.out.println();
                 System.out.println("점수는 다음과 같습니다.");
-                System.out.println("1번 게임 결과: " + score1);
-                System.out.println("2번 게임 결과: " + score2);
-                System.out.println("3번 게임 결과: " + score3);
-                System.out.println("4번 게임 결과: " + score4);
-                System.out.println("5번 게임 결과: " + score5);
-                System.out.println("6번 게임 결과: " + score6);
-                System.out.println("");
-                System.out.println("총 합산 점수: " + totalScore);
-                System.out.println("");
+                System.out.println("카지노 워 (Casino War) 결과 : " + score1 + "점");
+                System.out.println("업 다운 (Up & Down) 결과 : " + score2 + "점");
+                System.out.println("세븐 (Sevens7) 결과 : " + score3 + "점");
+                System.out.println("오마하 포커 (Omaha Poker) 결과 : " + score4 + "점");
+                System.out.println("숫자야구 (Baseball Game) 결과 : " + score5 + "점");
+                System.out.println("스파이더 솔리테어 (Spider Solitaire) 결과 : " + score6 + "점");
+                System.out.println();
+                System.out.println("총 합산 점수: " + totalScore + "점");
+                System.out.println();
             }
             else if(choice == 3){
                 // 종료하기 선택 시

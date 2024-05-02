@@ -23,7 +23,7 @@ class Player {
 
     // 손에 있는 카드 출력
     public void displayHand() {
-        System.out.print(name + "' 덱: ");
+        System.out.print(name + "의 덱 : ");
         for (int card : hand) {
             System.out.print(card + " ");
         }
@@ -96,17 +96,17 @@ public class SevensGame extends GameIntroduction{
 
         // 게임 종료 후 승자를 출력
         Player winner = findWinner();
-        System.out.println("게임 종료! " + winner.getName() + " 승리!");
+        System.out.println("게임 종료!");
         if(winner.getName()=="플레이어"){
             System.out.println("최종 승자는 당신입니다!");
             WinLose.winlose = 1;
         }
         else if(winner.getName()=="컴퓨터"){
-            System.out.println("최종 승자는 컴퓨터입니다!");
+            System.out.println("승자는 컴퓨터입니다!");
             WinLose.winlose = 0;
         }
         else{
-            System.out.println("최종 승자는 없습니다!");
+            System.out.println("승자는 없습니다!");
             WinLose.winlose = 2;
         }
     }
@@ -135,7 +135,7 @@ public class SevensGame extends GameIntroduction{
         player.displayHand();
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("플레이할 카드 선택(또는 0장 뽑기): ");
+        System.out.print("낼 카드 선택(또는 1장 뽑기 위해 0 입력) : ");
         int cardToPlay = scanner.nextInt();
 
         if (cardToPlay == 0) {
@@ -197,7 +197,7 @@ private void computerTurn() {
 
     // 컴퓨터가 가지고 있는 카드 출력
     private void displayComputerHand() {
-        System.out.print("컴퓨터의 덱: ");
+        System.out.print("컴퓨터의 덱 : ");
         for (int card : computer.getHand()) {
             System.out.print(card + " ");
         }

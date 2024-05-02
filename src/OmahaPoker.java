@@ -48,8 +48,8 @@ public class OmahaPoker extends GameIntroduction{
 
     // 카드 보여주는 메서드
     private void showHands() {
-        System.out.println("플레이어의 패: " + humanPlayer.getHand()); // 사용자의 카드 보여주기
-        System.out.println("공개 카드: " + communityCards); // 공개 카드(테이블에 나온 카드) 보여주기
+        System.out.println("플레이어의 패 : " + humanPlayer.getHand()); // 사용자의 카드 보여주기
+        System.out.println("공개 카드 : " + communityCards); // 공개 카드(테이블에 나온 카드) 보여주기
     }
 
     // 사용자가 카드 선택하고 새로 뽑는 메서드
@@ -111,8 +111,8 @@ public class OmahaPoker extends GameIntroduction{
         HandRank computerRank = evaluateHand(computerPlayer.getHand(), communityCards); // 컴퓨터의 패 평가
 
         // 각 플레이어의 패 출력
-        System.out.println("플레이어의 패: " + humanRank + " - " + humanPlayer.getHand() + " + " + communityCards);
-        System.out.println("컴퓨터의 패: " + computerRank + " - " + computerPlayer.getHand() + " + " + communityCards);
+        System.out.println("플레이어의 패 : " + humanRank + " - " + humanPlayer.getHand() + " + " + communityCards);
+        System.out.println("컴퓨터의 패 : " + computerRank + " - " + computerPlayer.getHand() + " + " + communityCards);
 
         // 승자 출력
         if (humanRank.compareTo(computerRank) > 0) {
