@@ -32,9 +32,10 @@ public class CardGame {
                     int gamechoice = sc.nextInt();
 
                     if(gamechoice == 1){
+                        // 1번 게임 선택 시
                         System.out.println("카지노 워 카드게임이 시작됩니다 !!");
                         CasinoWar.main(args);
-                        // 1번 게임 선택 시
+
                         if(WinLose.winlose == 1){
                             score1 = 10;
                         }
@@ -47,71 +48,76 @@ public class CardGame {
                         break;
                     }
                     else if(gamechoice == 2){
+                        // 2번 게임 선택 시
                         System.out.println("업다운 카드게임이 시작됩니다 !!");
                         UpDownCardGame.main(args);
-                        // 2번 게임 선택 시
+
                         if(WinLose.winlose == 1){
-                            score1 = 20;
+                            score2 = 20;
                         }
                         else{
-                            score1 = 0;
+                            score2 = 0;
                         }
                         break;
                     }
                     else if(gamechoice == 3){
+                        // 3번 게임 선택 시
                         System.out.println("Sevens 카드게임이 시작됩니다 !!");
                         SevensGame.main(args);
-                        // 3번 게임 선택 시
+
                         if(WinLose.winlose == 1){
-                            score1 = 30;
+                            score3 = 30;
                         }
                         else if(WinLose.winlose == 0){
-                            score1 = 0;
+                            score3 = 0;
                         }
                         else{
-                            score1 = 15;
+                            score3 = 15;
                         }
                         break;
                     }
                     else if(gamechoice == 4){
+                        // 4번 게임 선택 시
                         System.out.println("오마하 포커 카드게임이 시작됩니다 !!");
                         OmahaPoker.main(args);
-                        // 4번 게임 선택 시
+                        
                         if(WinLose.winlose == 1){
-                            score1 = 40;
+                            score4 = 40;
                         }
                         else if(WinLose.winlose == 0){
-                            score1 = 0;
+                            score4 = 0;
                         }
                         else{
-                            score1 = 20;
+                            score4 = 20;
                         }
                         break;
                     }
                     else if(gamechoice == 5){
+                        // 5번 게임 선택 시
                         System.out.println("야구 카드게임이 시작됩니다 !!");
                         BaseballGame.main(args);
-                        // 5번 게임 선택 시
+                        
                         if(WinLose.winlose == 1){
-                            score1 = 50;
+                            score5 = 50;
                         }
                         else{
-                            score1 = 0;
+                            score5 = 0;
                         }
                         break;
                     }
                     else if(gamechoice == 6){
+                        // 6번 게임 선택 시
                         System.out.println("스파이더 솔리테어 게임이 시작됩니다 !!");
                         SpiderSolitaire.main(args);
-                        // 6번 게임 선택 시
+                        
                         if(WinLose.winlose == 1){
-                            score1 = 60;
+                            score6 = 60;
                         }
                         else if(WinLose.winlose == 0){
-                            score1 = 0;
+                            score6 = 0;
                         }
                         else{
-                            score1 = 30;
+                            score6 = 30;
                         }
                         break;
                     }
@@ -123,7 +129,6 @@ public class CardGame {
             }
             else if(choice == 2){
                 // 랭킹 확인 선택 시
-
                 totalScore = score1 + score2 + score3 + score4 + score5 + score6;
 
                 System.out.println("점수는 다음과 같습니다.");
