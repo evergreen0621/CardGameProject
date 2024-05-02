@@ -22,6 +22,7 @@ public class SpiderSolitaire extends GameIntroduction{
     private List<Stack<Card>> builds; // 9줄의 빌드
     private List<Card> deck; // 카드 덱
     private boolean gameOver;
+    private int moveCount; // 이동 횟수 카운트
 
     // 카드 클래스
     private static class Card {
@@ -46,6 +47,7 @@ public class SpiderSolitaire extends GameIntroduction{
         shuffleDeck();
         initializeBuilds();
         gameOver = false;
+        moveCount = 0; // 이동 횟수 초기화
     }
 
     // 카드 덱 초기화
@@ -128,6 +130,7 @@ public class SpiderSolitaire extends GameIntroduction{
             }
             System.out.println();
         }
+        System.out.println("이동 횟수: " + moveCount); // 이동 횟수 출력
     }
 
     private void moveCard(int fromBuild, int toBuild, int numCards) {
@@ -163,6 +166,7 @@ public class SpiderSolitaire extends GameIntroduction{
             to.push(cardsToMove[i]); // 역순으로 카드를 옮김
             from.pop(); // 옮겨진 카드는 원래 위치에서 제거
         }
+        moveCount++; // 이동 횟수 증가
         checkGameOver();
     }
     
@@ -184,27 +188,32 @@ public class SpiderSolitaire extends GameIntroduction{
         checkGameOver();
     }
 
-// 게임 종료 여부 확인
-private void checkGameOver() {
-    gameOver = true;
-    for (Stack<Card> build : builds) {
-        boolean isSetFound = false;
-        int expectedRank = NUM_RANKS;
-        for (Card card : build) {
-            if (card.rank == expectedRank) {
-                expectedRank--;
-                if (expectedRank == 0) { // 1부터 9까지 모두 세트가 있는 경우
-                    isSetFound = true;
-                    break;
+    // 게임 종료 여부 확인
+    private void checkGameOver() {
+        if (moveCount >= 30) { // 이동 횟수가 30을 넘으면 패배
+            gameOver = true;
+            System.out.println("이동 횟수가 30회를 초과하여 패배하셨습니다.");
+            return;
+        }
+        for (Stack<Card> build : builds) {
+            boolean isSetFound = false;
+            int expectedRank = NUM_RANKS;
+            for (Card card : build) {
+                if (card.rank == expectedRank) {
+                    expectedRank--;
+                    if (expectedRank == 0) { // 1부터 9까지 모두 세트가 있는 경우
+                        isSetFound = true;
+                        break;
+                    }
                 }
             }
-        }
-        if (!isSetFound) {
-            gameOver = false;
-            break;
+            if (isSetFound) {
+                gameOver = true;
+                System.out.println("축하합니다! 빌드가 완성되었습니다!");
+                break;
+            }
         }
     }
-}
 
 // 게임 종료 후 추가 기능: 승리 여부와 재시작 여부 확인
 private void askToPlayAgain(Scanner scanner) {
@@ -250,6 +259,7 @@ private boolean isDescendingOrder(Stack<Card> stack) {
         shuffleDeck();
         initializeBuilds();
         gameOver = false;
+        moveCount = 0; // 이동 횟수 초기화
     }
 
     public static void main(String[] args) {
