@@ -1,8 +1,8 @@
 import java.util.*;
 
 public class SpiderSolitaire {
-    private static final int NUM_BUILDS = 10; // 총 10줄
-    private static final int[] CARDS_PER_LINE = {6, 6, 6, 6, 5, 5, 5, 5, 5, 5}; // 각 줄별 카드 수
+    private static final int NUM_BUILDS = 5; // 총 5줄
+    private static final int[] CARDS_PER_LINE = {6, 6, 5, 5, 5}; // 각 줄별 카드 수
 
     private static final int NUM_SUITS = 2; // 두 개의 슈트만 사용 (하트와 클로버)
     private static final int NUM_RANKS = 13;
