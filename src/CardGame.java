@@ -1,7 +1,15 @@
 import java.util.Scanner;
 
 public class CardGame {
+
     public static void main(String[] args) throws Exception {
+        int score1 =10;
+        int score2 =20;
+        int score3 =30;
+        int score4 =40;
+        int score5 =50;
+        int score6 =60;
+        int totalScore=0;
         Scanner sc = new Scanner(System.in);
 
         System.out.println("카드 게임 랜드에 오신 것을 환영합니다!");
@@ -68,12 +76,12 @@ public class CardGame {
             else if(choice == 2){
                 // 랭킹 확인 선택 시
                 System.out.println("랭킹은 다음과 같습니다.");
-                System.out.println("1번 게임 결과:");
-                System.out.println("2번 게임 결과:");
-                System.out.println("3번 게임 결과:");
-                System.out.println("4번 게임 결과:");
-                System.out.println("5번 게임 결과:");
-                System.out.println("6번 게임 결과:");
+                System.out.println("1번 게임 결과:" + score1);
+                System.out.println("2번 게임 결과:"+ score2);
+                System.out.println("3번 게임 결과:"+ score3);
+                System.out.println("4번 게임 결과:"+ score4);
+                System.out.println("5번 게임 결과:"+ score5);
+                System.out.println("6번 게임 결과:"+ score6);
                 System.out.println("");
                 System.out.println("총 합산 점수:");
                 System.out.println("");

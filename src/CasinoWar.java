@@ -8,6 +8,7 @@ public class CasinoWar {
 
         int playercount = 0;
         int computercount = 0;
+        
 
         for(int i = 0; i < 5; i++) {
             System.out.println("카드를 뽑기 위해 엔터키를 눌러주세요.");
@@ -42,6 +43,7 @@ public class CasinoWar {
         }
         else if(playercount < computercount){
             System.out.println("최종 승자는 컴퓨터입니다!");
+            
         }
         else{
             System.out.println("최종 승자는 없습니다!");
