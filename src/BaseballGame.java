@@ -2,7 +2,7 @@ import java.util.*;
 
 public class BaseballGame {
     private static final int NUM_DIGITS = 3; // 야구 숫자는 3자리
-    private static final int MAX_ATTEMPTS = 10; // 최대 시도 횟수
+    private static final int MAX_ATTEMPTS = 7; // 최대 시도 횟수
 
     public static void main(String[] args) {
         System.out.println("Welcome to Baseball Card Game!\n");
@@ -39,7 +39,8 @@ public class BaseballGame {
 
         // 최대 시도 횟수를 초과하여 게임 종료
         if (!gameWon) {
-            System.out.println("아쉽지만 시도 횟수를 초과하였습니다. 정답은 " + Arrays.toString(answer) + " 입니다.");
+            System.out.println("아쉽지만 시도 횟수를 초과하여 당신이 패배했습니다.");
+            System.out.println("정답은 : " + Arrays.toString(answer) + " 입니다.");
         }
 
         scanner.close();
