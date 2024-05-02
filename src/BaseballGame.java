@@ -57,8 +57,6 @@ public class BaseballGame extends GameIntroduction{
             System.out.println("정답은 : " + Arrays.toString(answer) + " 입니다.");
             WinLose.winlose = 0;
         }
-
-        scanner.close();
     }
 
     // 랜덤한 3자리 숫자 생성

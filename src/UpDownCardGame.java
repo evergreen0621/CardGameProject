@@ -51,6 +51,5 @@ public class UpDownCardGame extends GameIntroduction {
                 WinLose.winlose = 0;
             }
         }
-        sc.close();
     }
 }

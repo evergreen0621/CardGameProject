@@ -61,7 +61,5 @@ public class CasinoWar extends GameIntroduction{
             System.out.println("최종 승자는 없습니다!");
             WinLose.winlose = 2;
         }
-
-        sc.close();
     }
 }
