@@ -113,7 +113,6 @@ public class SpiderSolitaire {
         }
     }
 
-    // 카드 이동
     private void moveCard(int fromBuild, int toBuild, int numCards) {
         if (fromBuild < 0 || fromBuild >= NUM_BUILDS || toBuild < 0 || toBuild >= NUM_BUILDS) {
             System.out.println("잘못된 빌드 번호입니다!");
@@ -129,21 +128,28 @@ public class SpiderSolitaire {
             System.out.println("잘못된 카드 개수입니다!");
             return;
         }
+        Card[] cardsToMove = new Card[numCards]; // 옮길 카드들을 저장할 배열 생성
+        // 옮길 카드들을 역순으로 배열에 저장
+        for (int i = numCards - 1; i >= 0; i--) {
+            cardsToMove[numCards - 1 - i] = from.get(from.size() - 1 - i);
+        }
+        Card toCard = to.isEmpty() ? null : to.peek();
+        if (toCard == null && cardsToMove[0].rank == NUM_RANKS) {
+            System.out.println("이동할 수 없는 위치입니다!");
+            return;
+        }
+        if (toCard != null && (cardsToMove[0].rank != toCard.rank - 1 || cardsToMove[0].suit != toCard.suit)) {
+            System.out.println("잘못된 이동입니다!");
+            return;
+        }
         for (int i = 0; i < numCards; i++) {
-            Card fromCard = from.peek();
-            Card toCard = to.isEmpty() ? null : to.peek();
-            if (toCard == null && fromCard.rank == NUM_RANKS) {
-                System.out.println("이동할 수 없는 위치입니다!");
-                return;
-            }
-            if (toCard != null && (fromCard.rank != toCard.rank - 1 || fromCard.suit != toCard.suit)) {
-                System.out.println("잘못된 이동입니다!");
-                return;
-            }
-            to.push(from.pop());
+            to.push(cardsToMove[i]); // 역순으로 카드를 옮김
+            from.pop(); // 옮겨진 카드는 원래 위치에서 제거
         }
     }
-
+    
+    
+    
     // 랜덤 카드 추가
     private void addRandomCard() {
         if (deck.isEmpty()) {
@@ -162,7 +168,7 @@ public class SpiderSolitaire {
     }
 
     // 게임 종료 여부 확인
-    private boolean isGameOver() {
+    private boolean isGameOver() {  
         for (Stack<Card> build : builds) {
             if (build.size() != NUM_RANKS) {
                 return false;
