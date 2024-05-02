@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class SpiderSolitaire {
-    private static final int NUM_BUILDS = 5; // 총 5줄
+    private static final int NUM_BUILDS = 5; // 총 10줄
     private static final int[] CARDS_PER_LINE = {6, 6, 5, 5, 5}; // 각 줄별 카드 수
 
     private static final int NUM_SUITS = 2; // 두 개의 슈트만 사용 (하트와 클로버)
@@ -9,6 +9,7 @@ public class SpiderSolitaire {
 
     private List<Stack<Card>> builds; // 10줄의 빌드
     private List<Card> deck; // 카드 덱
+    private boolean gameOver;
 
     // 카드 클래스
     private static class Card {
@@ -32,6 +33,7 @@ public class SpiderSolitaire {
         initializeDeck();
         shuffleDeck();
         initializeBuilds();
+        gameOver = false;
     }
 
     // 카드 덱 초기화
@@ -72,13 +74,15 @@ public class SpiderSolitaire {
     // 게임 시작
     public void play() {
         Scanner scanner = new Scanner(System.in);
-        while (!isGameOver()) {
+        while (!gameOver) {
             displayBuilds();
             System.out.println("\n카드 추가: 'a', 종료: 'q'");
             System.out.println("ex. 2번째 줄에서 5번째 줄로 2장 이동 : 2 5 3");
             System.out.print("이동할 카드를 입력하세요. : ");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("q")) {
+                gameOver = true;
+                System.out.println("게임 종료! 패배하셨습니다.");
                 break;
             } else if (input.equalsIgnoreCase("a")) {
                 addRandomCard();
@@ -98,7 +102,7 @@ public class SpiderSolitaire {
                 }
             }
         }
-        System.out.println("게임 종료!");
+        scanner.close(); // Scanner 종료
     }
 
     // 빌드 출력
@@ -146,9 +150,8 @@ public class SpiderSolitaire {
             to.push(cardsToMove[i]); // 역순으로 카드를 옮김
             from.pop(); // 옮겨진 카드는 원래 위치에서 제거
         }
+        checkGameOver();
     }
-    
-    
     
     // 랜덤 카드 추가
     private void addRandomCard() {
@@ -165,16 +168,36 @@ public class SpiderSolitaire {
                 return;
             }
         }
+        checkGameOver();
     }
 
     // 게임 종료 여부 확인
-    private boolean isGameOver() {  
+    private void checkGameOver() {
+        gameOver = true;
         for (Stack<Card> build : builds) {
             if (build.size() != NUM_RANKS) {
-                return false;
+                gameOver = false;
+                break;
             }
         }
-        return true;
+    }
+
+    // 게임 종료 후 추가 기능: 승리 여부와 재시작 여부 확인
+    private void askToPlayAgain(Scanner scanner) {
+        System.out.println("게임 종료!");
+        if (gameOver) {
+            System.out.println("축하합니다! 모든 빌드가 완성되었습니다!");
+        } else {
+            System.out.println("게임에서 나가셨습니다.");
+        }
+    }
+
+    // 게임 재시작을 위한 초기화
+    private void resetGame() {
+        initializeDeck();
+        shuffleDeck();
+        initializeBuilds();
+        gameOver = false;
     }
 
     public static void main(String[] args) {
