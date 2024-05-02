@@ -1,13 +1,25 @@
 import java.util.*;
 
-public class SpiderSolitaire {
-    private static final int NUM_BUILDS = 5; // 총 10줄
-    private static final int[] CARDS_PER_LINE = {6, 6, 5, 5, 5}; // 각 줄별 카드 수
+public class SpiderSolitaire extends GameIntroduction{
+    @Override
+    public void introGame() {
+        System.out.println(" - 'SpiderSolitaire Game'은 69장의 카드가 주어져 같은 모양의 카드를 1부터 9까지 내림차순를 한 세트를 만들면 게임이 종료됩니다.\r\n" + //
+                        "\r\n" + //
+                        "Ex) | 9♣ | 8♣ | 7♣ | 6♣ | 5♣ | 4♣ | 3♣ | 2♣ | 1♣ |\r\n" + //
+                        "\r\n" + //
+                        "1. a를 눌러 카드 한 줄의 랜덤 카드를 새로 받을 수 있습니다.\r\n" + //
+                        "2. 입력을 할 때 : A B C (A번째 줄에서 B번째 줄로 이동, C = 카드의 개수)\r\n" + //
+                        "\r\n" + //
+                        "게임을 시작하겠습니다. ");
+    }
+    private static final int NUM_BUILDS = 9; // 총 9줄
+    private static final int[] CARDS_PER_LINE = {6, 6, 6, 6, 5, 5, 5, 5, 5}; // 각 줄별 카드 수
+    
 
     private static final int NUM_SUITS = 2; // 두 개의 슈트만 사용 (하트와 클로버)
-    private static final int NUM_RANKS = 13;
-
-    private List<Stack<Card>> builds; // 10줄의 빌드
+    private static final int NUM_RANKS = 9; // 1부터 9까지의 카드
+ 
+    private List<Stack<Card>> builds; // 9줄의 빌드
     private List<Card> deck; // 카드 덱
     private boolean gameOver;
 
@@ -42,7 +54,8 @@ public class SpiderSolitaire {
         for (int suit = 0; suit < NUM_SUITS; suit++) {
             for (int i = 0; i < NUM_BUILDS; i++) {
                 for (int j = 0; j < CARDS_PER_LINE[i]; j++) {
-                    deck.add(new Card(j + 1, suit));
+                    deck.add(new Card((int)(Math.random() * NUM_RANKS) + 1, suit));
+
                 }
             }
         }
@@ -53,7 +66,7 @@ public class SpiderSolitaire {
         Collections.shuffle(deck);
     }
 
-    // 10줄의 빌드 초기화
+    // 9줄의 빌드 초기화
     private void initializeBuilds() {
         builds = new ArrayList<>();
         for (int i = 0; i < NUM_BUILDS; i++) {
@@ -171,26 +184,65 @@ public class SpiderSolitaire {
         checkGameOver();
     }
 
-    // 게임 종료 여부 확인
-    private void checkGameOver() {
-        gameOver = true;
-        for (Stack<Card> build : builds) {
-            if (build.size() != NUM_RANKS) {
-                gameOver = false;
-                break;
+// 게임 종료 여부 확인
+private void checkGameOver() {
+    gameOver = true;
+    for (Stack<Card> build : builds) {
+        boolean isSetFound = false;
+        int expectedRank = NUM_RANKS;
+        for (Card card : build) {
+            if (card.rank == expectedRank) {
+                expectedRank--;
+                if (expectedRank == 0) { // 1부터 9까지 모두 세트가 있는 경우
+                    isSetFound = true;
+                    break;
+                }
             }
         }
-    }
-
-    // 게임 종료 후 추가 기능: 승리 여부와 재시작 여부 확인
-    private void askToPlayAgain(Scanner scanner) {
-        System.out.println("게임 종료!");
-        if (gameOver) {
-            System.out.println("축하합니다! 모든 빌드가 완성되었습니다!");
-        } else {
-            System.out.println("게임에서 나가셨습니다.");
+        if (!isSetFound) {
+            gameOver = false;
+            break;
         }
     }
+}
+
+// 게임 종료 후 추가 기능: 승리 여부와 재시작 여부 확인
+private void askToPlayAgain(Scanner scanner) {
+    System.out.println("게임 종료!");
+    if (gameOver) {
+        System.out.println("축하합니다! 게임에서 승리하셨습니다!");
+        displaySortedDeck(); // 정렬된 카드 덱 출력
+    } else {
+        System.out.println("게임에서 나가셨습니다.");
+    }
+}
+
+// 정렬된 카드 덱 출력
+private void displaySortedDeck() {
+    System.out.println("\n정렬된 카드 덱:");
+    List<Card> sortedDeck = new ArrayList<>(deck);
+    Collections.sort(sortedDeck, Comparator.comparingInt(card -> -card.rank)); // 내림차순으로 정렬
+    for (Card card : sortedDeck) {
+        System.out.print(card + " ");
+    }
+    System.out.println();
+}
+
+
+// 스택이 내림차순으로 정렬되어 있는지 확인하는 메서드
+private boolean isDescendingOrder(Stack<Card> stack) {
+    if (stack.size() != NUM_RANKS) {
+        return false;
+    }
+    int expectedRank = NUM_RANKS;
+    for (Card card : stack) {
+        if (card.rank != expectedRank) {
+            return false;
+        }
+        expectedRank--;
+    }
+    return true;
+}
 
     // 게임 재시작을 위한 초기화
     private void resetGame() {
@@ -201,6 +253,8 @@ public class SpiderSolitaire {
     }
 
     public static void main(String[] args) {
+        SpiderSolitaire spiderSolitaire = new SpiderSolitaire();
+        spiderSolitaire.introGame();
         SpiderSolitaire game = new SpiderSolitaire();
         game.play();
     }
