@@ -1,8 +1,20 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class CasinoWar {
+public class CasinoWar extends GameIntroduction{
+    @Override
+    public void introGame() {
+        System.out.println(" 이 게임은 1레벨의 게임입니다 \r\n" + //
+                        "\r\n" + //
+                        "- 'CasinoWar'은 플레이어와 컴퓨터가 랜덤의 카드 숫자 1개씩 뽑아 서로의 숫자 크기를 비교하여 승패를 가르는 게임입니다. \r\n" + //
+                        "\r\n" + //
+                        "1. 총 5판으로 이루어져 있고 각 게임의 승패로 최종 승패를 가립니다. \r\n" + //
+                        "\r\n" + //
+                        "게임을 시작하겠습니다. ");
+    }
     public static void main(String[] args) throws Exception{
+        CasinoWar casinoWar = new CasinoWar();
+        casinoWar.introGame();
         Scanner sc = new Scanner(System.in);
         Random random = new Random();
 

@@ -47,7 +47,20 @@ class Player {
 }
 
 // 게임 클래스
-public class SevensGame {
+public class SevensGame extends GameIntroduction{
+    @Override
+    public void introGame() {
+        System.out.println(" 이 게임은 3레벨의 게임입니다\r\n" + //
+                        "\r\n" + //
+                        "- 'Sevensgame'은 '7의 배수'를 중심으로 플레이어와 컴퓨터가 카드를 선택하고 매 턴마다 카드를 뽑는 게임입니다.\r\n" + //
+                        "\r\n" + //
+                        "1. 게임이 시작되면 7장의 카드가 주어집니다.\r\n" + //
+                        "2. 플레이어는 턴마다 7의 배수인 카드를 선택하여 제거를 할 수 있습니다.\r\n" + //
+                        "3. 7의 배수가 없는 경우 0번 눌러 카드를 뽑을 수 있습니다.\r\n" + //
+                        "4. 게임이 종료되었을 때에 카드의 수로 승패를 가릅니다\r\n" + //
+                        "\r\n" + //
+                        "게임을 시작하겠습니다. ");
+    }
     private Player player; // 플레이어
     private Player computer; // 컴퓨터
     private ArrayList<Integer> center;  // 중앙에 놓인 카드
@@ -246,6 +259,8 @@ private void computerTurn() {
     }
 
     public static void main(String[] args) {
+        SevensGame sevensGame = new SevensGame();
+        sevensGame.introGame();
         SevensGame game = new SevensGame();
         game.startGame();
     }

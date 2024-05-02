@@ -1,6 +1,17 @@
 import java.util.*;
 
-public class OmahaPoker {
+public class OmahaPoker extends GameIntroduction{
+    @Override
+    public void introGame() {
+        System.out.println(" 이 게임은 4레벨의 게임입니다 \r\n" + //
+                        "\r\n" + //
+                        "- 'OmahaPoker'는 플레이어와 컴퓨터가 각각 2장의 랜덤 카드를 받고 공용으로 주어지는 5장의 카드와의 플레이어들의 패를 평가하여 승패를 가르는 게임입니다. \r\n" + //
+                        "\r\n" + //
+                        "1. 플레이어는 1장 또는 2장의 카드를 바꿀 수 있습니다.\r\n" + //
+                        "\r\n" + //
+                        "게임을 시작하겠습니다. ");
+    }
+    
     private Deck deck; // 카드 덱
     private Player1 humanPlayer; // 사용자 플레이어
     private Player1 computerPlayer; // 컴퓨터 플레이어
@@ -269,6 +280,8 @@ public class OmahaPoker {
 
     // 메인 메서드
     public static void main(String[] args) throws Exception {
+        OmahaPoker omahaPoker = new OmahaPoker();
+        omahaPoker.introGame();
         OmahaPoker game = new OmahaPoker();
         game.playGame();
     }

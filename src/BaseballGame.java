@@ -1,10 +1,23 @@
 import java.util.*;
 
-public class BaseballGame {
+public class BaseballGame extends GameIntroduction{
+    @Override
+    public void introGame() {
+        System.out.println(" 이 게임은 5레벨의 게임입니다\r\n" + //
+                        "\r\n" + //
+                        "- '야구 숫자 게임'은 플레이어가 3장의 숫자 카드를 뽑아 컴퓨터가 생각한 3자리의 숫자를 맞추는 게임입니다. -\r\n" + //
+                        "\r\n" + //
+                        "1. 3장의 카드 중 컴퓨터가 생각한 숫자가 있지만 자리가 맞지 않으면 볼 컴퓨터가 생각한 숫자가 있으며 자리도 맞는 숫자가 있다면 스트라이크 입니다!\r\n" + //
+                        "2. 총 기회는 7번이고 그 안에 맞추지 못한다면 당신의 패배입니다.\r\n" + //
+                        "\r\n" + //
+                        "게임을 시작하겠습니다. ");
+    }
     private static final int NUM_DIGITS = 3; // 야구 숫자는 3자리
     private static final int MAX_ATTEMPTS = 7; // 최대 시도 횟수
 
     public static void main(String[] args) {
+        BaseballGame baseballGame = new BaseballGame();
+        baseballGame.introGame();
         System.out.println("Welcome to Baseball Card Game!\n");
 
         // 컴퓨터가 생각하는 랜덤한 숫자 생성
