@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class UpDownCardGame implements Greeting{
+public class UpDownCardGame {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
         
@@ -31,18 +31,15 @@ public class UpDownCardGame implements Greeting{
             }
             else{
                 System.out.println("숫자를 맞췄습니다. 당신의 승리!");
+                WinLose.winlose = 1;
                 break;
             }
 
             if(i == 4){
                 System.out.println("맞추지 못했습니다. 당신의 패배!");
+                WinLose.winlose = 0;
             }
         }
         sc.close();
-    }
-    // Greeting 인터페이스의 introGame 메소드 구현
-    @Override
-    public void introGame() {
-        System.out.println("게임하는 방법은 다음과 같아요!");
     }
 }

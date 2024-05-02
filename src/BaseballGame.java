@@ -31,6 +31,7 @@ public class BaseballGame {
             if (strikes == NUM_DIGITS) {
                 System.out.println("\n축하합니다!! 당신이 이겼습니다 정답 : " + Arrays.toString(answer));
                 gameWon = true;
+                WinLose.winlose = 1;
             } else {
                 System.out.println("스트~라이크 : " + strikes + ", 볼.. : " + balls);
                 System.out.println("다시 맞춰보세요!! (남은 시도 횟수: " + (MAX_ATTEMPTS - attempts) + ")\n");
@@ -41,6 +42,7 @@ public class BaseballGame {
         if (!gameWon) {
             System.out.println("아쉽지만 시도 횟수를 초과하여 당신이 패배했습니다.");
             System.out.println("정답은 : " + Arrays.toString(answer) + " 입니다.");
+            WinLose.winlose = 0;
         }
 
         scanner.close();

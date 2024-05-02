@@ -53,11 +53,8 @@ public class CardGame {
                         if(WinLose.winlose == 1){
                             score1 = 20;
                         }
-                        else if(WinLose.winlose == 0){
-                            score1 = 0;
-                        }
                         else{
-                            score1 = 10;
+                            score1 = 0;
                         }
                         break;
                     }
@@ -98,11 +95,8 @@ public class CardGame {
                         if(WinLose.winlose == 1){
                             score1 = 50;
                         }
-                        else if(WinLose.winlose == 0){
-                            score1 = 0;
-                        }
                         else{
-                            score1 = 25;
+                            score1 = 0;
                         }
                         break;
                     }
