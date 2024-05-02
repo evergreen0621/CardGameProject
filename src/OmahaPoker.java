@@ -3,7 +3,7 @@ import java.util.*;
 public class OmahaPoker extends GameIntroduction{
     @Override
     public void introGame() {
-        System.out.println(" 이 게임은 4레벨의 게임입니다 \r\n" + //
+        System.out.println("이 게임은 4레벨의 게임입니다.\r\n" + //
                         "\r\n" + //
                         "- 'OmahaPoker'는 플레이어와 컴퓨터가 각각 2장의 랜덤 카드를 받고 공용으로 주어지는 5장의 카드와의 플레이어들의 패를 평가하여 승패를 가르는 게임입니다. \r\n" + //
                         "\r\n" + //

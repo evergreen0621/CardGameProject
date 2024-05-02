@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class CasinoWar extends GameIntroduction{
     @Override
     public void introGame() {
-        System.out.println(" 이 게임은 1레벨의 게임입니다 \r\n" + //
+        System.out.println("이 게임은 1레벨의 게임입니다.\r\n" + //
                         "\r\n" + //
                         "- 'CasinoWar'은 플레이어와 컴퓨터가 랜덤의 카드 숫자 1개씩 뽑아 서로의 숫자 크기를 비교하여 승패를 가르는 게임입니다. \r\n" + //
                         "\r\n" + //

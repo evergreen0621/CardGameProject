@@ -3,7 +3,7 @@ import java.util.*;
 public class BaseballGame extends GameIntroduction{
     @Override
     public void introGame() {
-        System.out.println(" 이 게임은 5레벨의 게임입니다\r\n" + //
+        System.out.println("이 게임은 5레벨의 게임입니다.\r\n" + //
                         "\r\n" + //
                         "- '야구 숫자 게임'은 플레이어가 3장의 숫자 카드를 뽑아 컴퓨터가 생각한 3자리의 숫자를 맞추는 게임입니다. -\r\n" + //
                         "\r\n" + //

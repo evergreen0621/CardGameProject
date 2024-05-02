@@ -33,7 +33,7 @@ public class CardGame {
 
                     if(gamechoice == 1){
                         // 1번 게임 선택 시
-                        System.out.println("카지노 워 카드게임이 시작됩니다 !!");
+                        System.out.println("카지노 워 카드게임이 시작됩니다 !!\n");
                         CasinoWar.main(args);
 
                         if(WinLose.winlose == 1){
@@ -49,7 +49,7 @@ public class CardGame {
                     }
                     else if(gamechoice == 2){
                         // 2번 게임 선택 시
-                        System.out.println("업다운 카드게임이 시작됩니다 !!");
+                        System.out.println("업다운 카드게임이 시작됩니다 !!\n");
                         UpDownCardGame.main(args);
 
                         if(WinLose.winlose == 1){
@@ -62,7 +62,7 @@ public class CardGame {
                     }
                     else if(gamechoice == 3){
                         // 3번 게임 선택 시
-                        System.out.println("Sevens 카드게임이 시작됩니다 !!");
+                        System.out.println("Sevens 카드게임이 시작됩니다 !!\n");
                         SevensGame.main(args);
 
                         if(WinLose.winlose == 1){
@@ -78,7 +78,7 @@ public class CardGame {
                     }
                     else if(gamechoice == 4){
                         // 4번 게임 선택 시
-                        System.out.println("오마하 포커 카드게임이 시작됩니다 !!");
+                        System.out.println("오마하 포커 카드게임이 시작됩니다 !!\n");
                         OmahaPoker.main(args);
                         
                         if(WinLose.winlose == 1){
@@ -94,7 +94,7 @@ public class CardGame {
                     }
                     else if(gamechoice == 5){
                         // 5번 게임 선택 시
-                        System.out.println("야구 카드게임이 시작됩니다 !!");
+                        System.out.println("야구 카드게임이 시작됩니다 !!\n");
                         BaseballGame.main(args);
                         
                         if(WinLose.winlose == 1){
@@ -107,17 +107,14 @@ public class CardGame {
                     }
                     else if(gamechoice == 6){
                         // 6번 게임 선택 시
-                        System.out.println("스파이더 솔리테어 게임이 시작됩니다 !!");
+                        System.out.println("스파이더 솔리테어 게임이 시작됩니다 !!\n");
                         SpiderSolitaire.main(args);
                         
                         if(WinLose.winlose == 1){
                             score6 = 60;
                         }
-                        else if(WinLose.winlose == 0){
-                            score6 = 0;
-                        }
                         else{
-                            score6 = 30;
+                            score6 = 0;
                         }
                         break;
                     }

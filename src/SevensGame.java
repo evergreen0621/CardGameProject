@@ -50,7 +50,7 @@ class Player {
 public class SevensGame extends GameIntroduction{
     @Override
     public void introGame() {
-        System.out.println(" 이 게임은 3레벨의 게임입니다\r\n" + //
+        System.out.println("이 게임은 3레벨의 게임입니다.\r\n" + //
                         "\r\n" + //
                         "- 'Sevensgame'은 '7의 배수'를 중심으로 플레이어와 컴퓨터가 카드를 선택하고 매 턴마다 카드를 뽑는 게임입니다.\r\n" + //
                         "\r\n" + //

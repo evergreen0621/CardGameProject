@@ -3,7 +3,9 @@ import java.util.*;
 public class SpiderSolitaire extends GameIntroduction{
     @Override
     public void introGame() {
-        System.out.println(" - 'SpiderSolitaire Game'은 69장의 카드가 주어져 같은 모양의 카드를 1부터 9까지 내림차순를 한 세트를 만들면 게임이 종료됩니다.\r\n" + //
+        System.out.println("이 게임은 6레벨의 게임입니다.\r\n" + //
+                        "\r\n" + //
+                        "- 'SpiderSolitaire Game'은 69장의 카드가 주어져 같은 모양의 카드를 1부터 9까지 내림차순를 한 세트를 만들면 게임이 종료됩니다.\r\n" + //
                         "\r\n" + //
                         "Ex) | 9♣ | 8♣ | 7♣ | 6♣ | 5♣ | 4♣ | 3♣ | 2♣ | 1♣ |\r\n" + //
                         "\r\n" + //
@@ -91,13 +93,14 @@ public class SpiderSolitaire extends GameIntroduction{
         Scanner scanner = new Scanner(System.in);
         while (!gameOver) {
             displayBuilds();
-            System.out.println("\n카드 추가: 'a', 종료: 'q'");
-            System.out.println("ex. 2번째 줄에서 5번째 줄로 2장 이동 : 2 5 3");
+            System.out.println("\n카드 추가: 'a', 기권: 'q'");
+            System.out.println("ex. 2번째 줄에서 5번째 줄로 3장 이동 : 2 5 3");
             System.out.print("이동할 카드를 입력하세요. : ");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("q")) {
                 gameOver = true;
                 System.out.println("게임 종료! 패배하셨습니다.");
+                WinLose.winlose = 0;
                 break;
             } else if (input.equalsIgnoreCase("a")) {
                 addRandomCard();
@@ -117,7 +120,6 @@ public class SpiderSolitaire extends GameIntroduction{
                 }
             }
         }
-        scanner.close(); // Scanner 종료
     }
 
     // 빌드 출력
@@ -190,9 +192,10 @@ public class SpiderSolitaire extends GameIntroduction{
 
     // 게임 종료 여부 확인
     private void checkGameOver() {
-        if (moveCount >= 30) { // 이동 횟수가 30을 넘으면 패배
+        if (moveCount >= 20) { // 이동 횟수가 20을 넘으면 패배
             gameOver = true;
-            System.out.println("이동 횟수가 30회를 초과하여 패배하셨습니다.");
+            System.out.println("이동 횟수가 20회를 초과하여 패배하셨습니다.");
+            WinLose.winlose = 0;
             return;
         }
         for (Stack<Card> build : builds) {
@@ -209,57 +212,12 @@ public class SpiderSolitaire extends GameIntroduction{
             }
             if (isSetFound) {
                 gameOver = true;
-                System.out.println("축하합니다! 빌드가 완성되었습니다!");
+                System.out.println("축하합니다! 빌드가 완성되었습니다!\n");
+                WinLose.winlose = 1;
+                displayBuilds();
                 break;
             }
         }
-    }
-
-// 게임 종료 후 추가 기능: 승리 여부와 재시작 여부 확인
-private void askToPlayAgain(Scanner scanner) {
-    System.out.println("게임 종료!");
-    if (gameOver) {
-        System.out.println("축하합니다! 게임에서 승리하셨습니다!");
-        displaySortedDeck(); // 정렬된 카드 덱 출력
-    } else {
-        System.out.println("게임에서 나가셨습니다.");
-    }
-}
-
-// 정렬된 카드 덱 출력
-private void displaySortedDeck() {
-    System.out.println("\n정렬된 카드 덱:");
-    List<Card> sortedDeck = new ArrayList<>(deck);
-    Collections.sort(sortedDeck, Comparator.comparingInt(card -> -card.rank)); // 내림차순으로 정렬
-    for (Card card : sortedDeck) {
-        System.out.print(card + " ");
-    }
-    System.out.println();
-}
-
-
-// 스택이 내림차순으로 정렬되어 있는지 확인하는 메서드
-private boolean isDescendingOrder(Stack<Card> stack) {
-    if (stack.size() != NUM_RANKS) {
-        return false;
-    }
-    int expectedRank = NUM_RANKS;
-    for (Card card : stack) {
-        if (card.rank != expectedRank) {
-            return false;
-        }
-        expectedRank--;
-    }
-    return true;
-}
-
-    // 게임 재시작을 위한 초기화
-    private void resetGame() {
-        initializeDeck();
-        shuffleDeck();
-        initializeBuilds();
-        gameOver = false;
-        moveCount = 0; // 이동 횟수 초기화
     }
 
     public static void main(String[] args) {

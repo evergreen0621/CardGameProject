@@ -3,9 +3,9 @@ import java.util.Scanner;
 public class UpDownCardGame extends GameIntroduction {
     @Override
     public void introGame() {
-        System.out.println("이 게임은 2레벨의 게임입니다\r\n" + //
+        System.out.println("이 게임은 2레벨의 게임입니다.\r\n" + //
                         "\r\n" + //
-                        "-'UpDownCardGame'은 0과 50 사이의 숫자 카드를 골라 맞추는 게임입니다.\r\n" + //
+                        "- 'UpDownCardGame'은 0과 50 사이의 숫자 카드를 골라 맞추는 게임입니다.\r\n" + //
                         "\r\n" + //
                         "1. 플레이어는 총 5번의 숫자 카드를 뽑을 수 있습니다.\r\n" + //
                         "2. 카드를 뽑을 때마다 컴퓨터가 'Up' 또는 'Down'을 출력합니다.\r\n" + //
