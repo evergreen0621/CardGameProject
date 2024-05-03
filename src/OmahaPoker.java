@@ -55,25 +55,34 @@ public class OmahaPoker extends GameIntroduction{
     // 사용자가 카드 선택하고 새로 뽑는 메서드
     private void discardAndRedraw(Player1 player) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("버릴 카드를 골라주세요. (e.g., 1 2): ");
-        String input = scanner.nextLine(); // 사용자 입력 받기
-        if(input.equals("")){}
-        else{
-            String[] indices = input.split(" "); // 입력된 숫자들을 공백을 기준으로 나눠 배열에 저장
-            List<Integer> discardIndices = new ArrayList<>();
-            for (String index : indices) {
-                discardIndices.add(Integer.parseInt(index) - 1); // 입력된 숫자들을 정수형으로 변환하여 리스트에 추가
-            }
 
-            // 선택된 카드 버리기
-            Collections.sort(discardIndices, Collections.reverseOrder());
-            for (int index : discardIndices) {
-                player.discardCard(index);
-            }
+        while(true){
+            System.out.print("버릴 카드를 골라주세요. (e.g., 1 2): ");
+            String input = scanner.nextLine(); // 사용자 입력 받기
 
-            // 새로운 카드 뽑기
-            for (int i = 0; i < discardIndices.size(); i++) {
-                player.addCard(deck.drawCard());
+            if(input.equals("")){
+                break;
+            }
+            else if(input.equals("1") || input.equals("2") || input.equals("1 2")){
+                String[] indices = input.split(" "); // 입력된 숫자들을 공백을 기준으로 나눠 배열에 저장
+                List<Integer> discardIndices = new ArrayList<>();
+                for (String index : indices) {
+                    discardIndices.add(Integer.parseInt(index) - 1); // 입력된 숫자들을 정수형으로 변환하여 리스트에 추가
+                }
+                // 선택된 카드 버리기
+                Collections.sort(discardIndices, Collections.reverseOrder());
+                for (int index : discardIndices) {
+                    player.discardCard(index);
+                }
+    
+                // 새로운 카드 뽑기
+                for (int i = 0; i < discardIndices.size(); i++) {
+                    player.addCard(deck.drawCard());
+                }
+                break;
+            }
+            else{
+                System.out.println("맞지 않는 입력 방식입니다. 다시 입력해 주세요.");
             }
         }
     }
