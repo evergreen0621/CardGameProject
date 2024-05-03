@@ -7,7 +7,7 @@ public class UpDownCardGame extends GameIntroduction {
                         "\r\n" + //
                         "- 'UpDownCardGame'은 0과 50 사이의 숫자 카드를 골라 맞추는 게임입니다.\r\n" + //
                         "\r\n" + //
-                        "1. 플레이어는 총 5번의 숫자 카드를 뽑을 수 있습니다.\r\n" + //
+                        "1. 플레이어는 숫자 카드를 총 5번 추리할 수 있습니다.\r\n" + //
                         "2. 카드를 뽑을 때마다 컴퓨터가 'Up' 또는 'Down'을 출력합니다.\r\n" + //
                         "3. 플레이어가 숫자를 맞추면 게임은 종료됩니다.\r\n" + //
                         "\r\n" + //
@@ -32,7 +32,9 @@ public class UpDownCardGame extends GameIntroduction {
 
             numin = sc.nextInt();
 
-            if (numin < rannum) {
+            if(numin > high || numin < low){
+                System.out.println("숫자 범위 내에 없는 숫자입니다. 다른 숫자를 입력해 주세요.");
+            } else if (numin < rannum) {
                 System.out.println("UP");
                 low = numin;
                 System.out.println(low + "~" + high);
