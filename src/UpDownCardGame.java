@@ -23,7 +23,7 @@ public class UpDownCardGame extends GameIntroduction {
         int high = 50;
         int low = 0;
 
-        System.out.println("0과 50 사이의 숫자를 랜덤으로 결정하였습니다. 맞춰 보세요!");
+        System.out.println("0과 50 사이의 숫자 카드 한 장을 랜덤으로 뽑았습니다. 맞춰 보세요!");
 
         int rannum = (int) (Math.random() * 50);
 
