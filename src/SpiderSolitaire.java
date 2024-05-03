@@ -90,13 +90,13 @@ public class SpiderSolitaire extends GameIntroduction{
 
     // 게임 시작
     public void play() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         while (!gameOver) {
             displayBuilds();
             System.out.println("\n카드 추가: 'a', 기권: 'q'");
             System.out.println("ex. 2번째 줄에서 5번째 줄로 3장 이동 : 2 5 3");
             System.out.print("이동할 카드를 입력하세요. : ");
-            String input = scanner.nextLine();
+            String input = sc.nextLine();
             if (input.equalsIgnoreCase("q")) {
                 gameOver = true;
                 System.out.println("게임 종료! 패배하셨습니다.");

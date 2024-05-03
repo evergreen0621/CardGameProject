@@ -18,20 +18,26 @@ public class BaseballGame extends GameIntroduction{
     public static void main(String[] args) {
         BaseballGame baseballGame = new BaseballGame();
         baseballGame.introGame();
-        System.out.println("Welcome to Baseball Card Game!\n");
 
         // 컴퓨터가 생각하는 랜덤한 숫자 생성
         int[] answer = generateRandomNumber();
 
-        Scanner scanner = new Scanner(System.in);
+        System.out.println("숫자 카드들을 랜덤으로 뽑았습니다. 맞춰 보세요!\n");
+
+        Scanner sc = new Scanner(System.in);
 
         // 사용자가 정답을 맞출 때까지 또는 최대 시도 횟수를 초과할 때까지 게임 진행
         int attempts = 0;
         boolean gameWon = false;
         while (!gameWon && attempts < MAX_ATTEMPTS) {
             attempts++;
-            System.out.print(NUM_DIGITS + "자리의 숫자 카드를 뽑아 입력해주세요 : ");
-            String guessStr = scanner.nextLine();
+            System.out.print(NUM_DIGITS + "자리의 숫자 카드를 뽑아 붙여서 입력해주세요 : ");
+            String guessStr = sc.nextLine();
+
+            if(guessStr.length() != 3){
+                System.out.println("잘못된 입력 방식입니다. 다시 입력해 주세요.(남은 시도 횟수 : " + (MAX_ATTEMPTS - attempts) + ")\n");
+                continue;
+            }
 
             // 입력받은 숫자를 정수 배열로 변환
             int[] guess = parseGuess(guessStr);

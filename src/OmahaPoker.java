@@ -20,8 +20,8 @@ public class OmahaPoker extends GameIntroduction{
     // OmahaPoker 클래스 생성자
     public OmahaPoker() {
         deck = new Deck(); // 새로운 카드 덱 생성
-        humanPlayer = new Player1("플레이어"); // 사용자 플레이어 생성
-        computerPlayer = new Player1("컴퓨터"); // 컴퓨터 플레이어 생성
+        humanPlayer = new Player1(); // 사용자 플레이어 생성
+        computerPlayer = new Player1(); // 컴퓨터 플레이어 생성
         communityCards = new ArrayList<>(); // 공통 카드 리스트 생성
     }
 
@@ -54,11 +54,11 @@ public class OmahaPoker extends GameIntroduction{
 
     // 사용자가 카드 선택하고 새로 뽑는 메서드
     private void discardAndRedraw(Player1 player) {
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
         while(true){
-            System.out.print("버릴 카드를 골라주세요. (e.g., 1 2): ");
-            String input = scanner.nextLine(); // 사용자 입력 받기
+            System.out.print("버릴 카드를 골라주세요. (e.g., 1 2) : ");
+            String input = sc.nextLine(); // 사용자 입력 받기
 
             if(input.equals("")){
                 break;
@@ -82,7 +82,7 @@ public class OmahaPoker extends GameIntroduction{
                 break;
             }
             else{
-                System.out.println("맞지 않는 입력 방식입니다. 다시 입력해 주세요.");
+                System.out.println("잘못된 입력 방식입니다. 다시 입력해 주세요.");
             }
         }
     }
@@ -298,12 +298,10 @@ public class OmahaPoker extends GameIntroduction{
 
 // 플레이어 클래스
 class Player1 {
-    private String name; // 플레이어 이름
     private List<Card> hand; // 플레이어의 손에 있는 카드
 
     // Player1 클래스 생성자
-    public Player1(String name) {
-        this.name = name;
+    public Player1() {
         hand = new ArrayList<>();
     }
 

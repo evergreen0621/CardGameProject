@@ -34,17 +34,17 @@ public class CasinoWar extends GameIntroduction{
 
             if(playercard > computercard){
                 // 사용자의 카드가 더 클 경우
-                System.out.println("당신의 승리입니다!\n");
+                System.out.println("당신의 승리입니다!(남은 횟수 : " + (4 - i) + ")\n");
                 playercount++;
             }
             else if(playercard < computercard){
                 // 컴퓨터의 카드가 더 클 경우
-                System.out.println("컴퓨터의 승리입니다!\n");
+                System.out.println("컴퓨터의 승리입니다!(남은 횟수 : " + (4 - i) + ")\n");
                 computercount++;
             }
             else{
                 // 무승부인 경우
-                System.out.println("무승부입니다!\n");
+                System.out.println("무승부입니다!(남은 횟수 : " + (4 - i) + ")\n");
             }
 
         }

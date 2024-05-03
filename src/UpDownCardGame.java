@@ -33,15 +33,17 @@ public class UpDownCardGame extends GameIntroduction {
             numin = sc.nextInt();
 
             if(numin > high || numin < low){
-                System.out.println("숫자 범위 내에 없는 숫자입니다. 다른 숫자를 입력해 주세요.");
+                System.out.println("범위 내에 없는 숫자입니다. 다른 숫자를 입력해 주세요.(남은 횟수 : " + (4 - i) +")");
             } else if (numin < rannum) {
                 System.out.println("UP");
                 low = numin;
                 System.out.println(low + "~" + high);
+                System.out.println("남은 횟수 : " + (4 - i));
             } else if (numin > rannum) {
                 System.out.println("DOWN");
                 high = numin;
                 System.out.println(low + "~" + high);
+                System.out.println("남은 횟수 : " + (4 - i));
             } else {
                 System.out.println("숫자를 맞췄습니다. 당신의 승리!");
                 WinLose.winlose = 1;

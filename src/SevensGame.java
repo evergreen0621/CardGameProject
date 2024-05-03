@@ -91,7 +91,7 @@ public class SevensGame extends GameIntroduction{
 
         // 게임 종료 후 승자를 출력
         System.out.println("게임 종료!");
-        Player winner = findWinner();
+        findWinner();
     }
 
     // 카드를 나눠줌
@@ -117,9 +117,9 @@ public class SevensGame extends GameIntroduction{
         System.out.println("\n플레이어의 턴 ");
         player.displayHand();
 
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         System.out.print("낼 카드 선택(또는 1장 뽑기 위해 0 입력) : ");
-        int cardToPlay = scanner.nextInt();
+        int cardToPlay = sc.nextInt();
 
         if (cardToPlay == 0) {
             if (playerDrawCount < MAX_DRAW_COUNT) {
@@ -145,7 +145,6 @@ public class SevensGame extends GameIntroduction{
     private void computerTurn() {
         System.out.println("\n컴퓨터의 턴");
         displayComputerHand(); // 컴퓨터가 가지고 있는 카드 출력
-        Random rand = new Random();
 
         // 컴퓨터가 가지고 있는 카드 중 7의 배수인 카드를 찾음
         boolean sevenMultipleCardExists = false;
