@@ -1,9 +1,13 @@
-import java.util.*;
-// 현재 컴퓨터는 자동으로 7의 배수 카드를 버리지 않음
-// 플레이어 클래스
-class Player {
-    private String name;
-    private ArrayList<Integer> hand; // 손에 있는 카드
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+import java.util.Scanner;
+
+// 게임에 사용되는 플레이어 클래스
+abstract class Player {
+    protected String name;
+    protected ArrayList<Integer> hand; // 손에 있는 카드
+    protected static final int MAX_DRAW_COUNT = 7; // 최대 카드 뽑기 횟수
 
     // 생성자
     public Player(String name) {
@@ -44,13 +48,95 @@ class Player {
     public ArrayList<Integer> getHand() {
         return hand;
     }
+
+    // 플레이어의 턴 수행 메소드(추상 메소드)
+    public abstract void playTurn(SevensGame game);
+}
+
+// 플레이어 클래스 구현
+class HumanPlayer1 extends Player {
+    public HumanPlayer1(String name) {
+        super(name);
+    }
+
+    // 플레이어의 턴 수행
+    @Override
+    public void playTurn(SevensGame game) {
+        System.out.println("\n" + name + "의 턴 ");
+        displayHand();
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("낼 카드 선택(또는 1장 뽑기 위해 0 입력) : ");
+        int cardToPlay = sc.nextInt();
+
+        if (cardToPlay == 0) {
+            game.drawCard(this);
+            System.out.println(name + "가 카드를 뽑습니다.");
+        } else if (cardToPlay % 7 == 0) {
+            if (!hand.contains(cardToPlay)) {
+                System.out.println("오류입니다! 손에 없는 카드를 선택하셨습니다.");
+            } else {
+                removeCard(cardToPlay);
+                System.out.println(name + "가 " + cardToPlay + "를 선택하여 제거하였습니다.");
+            }
+        } else {
+            System.out.println("오류입니다! 7의 배수인 카드를 내야 합니다.");
+        }
+
+        // 플레이어가 카드를 7번 뽑으면 게임 종료
+        if (game.getPlayerDrawCount() == MAX_DRAW_COUNT) {
+            game.findWinner();
+        }
+    }
+}
+
+// 컴퓨터 클래스 구현
+class ComputerPlayer1 extends Player {
+    public ComputerPlayer1(String name) {
+        super(name);
+    }
+
+    // 컴퓨터의 턴 수행
+    @Override
+    public void playTurn(SevensGame game) {
+        System.out.println("\n" + name + "의 턴");
+        displayHand();
+
+        boolean sevenMultipleCardExists = false;
+        int cardToPlay = 0;
+        for (int card : hand) {
+            if (card % 7 == 0) {
+                sevenMultipleCardExists = true;
+                cardToPlay = card;
+                break;
+            }
+        }
+
+        if (sevenMultipleCardExists) {
+            removeCard(cardToPlay);
+            System.out.println(name + "가 " + cardToPlay + "를 선택하여 제거하였습니다.");
+        } else {
+            if (game.getComputerDrawCount() < MAX_DRAW_COUNT) {
+                game.drawCard(this);
+                System.out.println(name + "가 카드를 뽑습니다.");
+                game.incrementComputerDrawCount();
+            } else {
+                System.out.println(name + "가 최대 드로우 한계에 도달했습니다.");
+            }
+        }
+
+        // 컴퓨터가 카드를 7번 뽑으면 게임 종료
+        if (game.getComputerDrawCount() == MAX_DRAW_COUNT) {
+            game.findWinner();
+        }
+    }
 }
 
 // 게임 클래스
 public class SevensGame extends GameIntroduction{
     @Override
     public void introGame() {
-        System.out.println("이 게임은 3레벨의 게임입니다.\r\n" + //
+        System.out.println(" 이 게임은 3레벨의 게임입니다\r\n" + //
                         "\r\n" + //
                         "- 'Sevensgame'은 '7의 배수'를 중심으로 플레이어와 컴퓨터가 카드를 선택하고 매 턴마다 카드를 뽑는 게임입니다.\r\n" + //
                         "\r\n" + //
@@ -63,14 +149,14 @@ public class SevensGame extends GameIntroduction{
     }
     private Player player; // 플레이어
     private Player computer; // 컴퓨터
-    private int playerDrawCount; // 플레이어가 카드를 뽑은 횟수
-    private int computerDrawCount; // 컴퓨터가 카드를 뽑은 횟수
-    private final int MAX_DRAW_COUNT = 10; // 최대 카드 뽑기 횟수
+    protected int playerDrawCount; // 플레이어가 카드를 뽑은 횟수
+    protected int computerDrawCount; // 컴퓨터가 카드를 뽑은 횟수
+    protected static final int MAX_DRAW_COUNT = 7; // 최대 카드 뽑기 횟수
 
     // 생성자
     public SevensGame() {
-        player = new Player("플레이어");
-        computer = new Player("컴퓨터");
+        player = new HumanPlayer1("플레이어");
+        computer = new ComputerPlayer1("컴퓨터");
         playerDrawCount = 0;
         computerDrawCount = 0;
     }
@@ -83,15 +169,11 @@ public class SevensGame extends GameIntroduction{
         // 게임이 끝날 때까지 반복
         while (!isGameOver()) {
             // 각 플레이어의 턴 수행
-            playerTurn();
+            player.playTurn(this);
             if (!isGameOver()) {
-                computerTurn();
+                computer.playTurn(this);
             }
         }
-
-        // 게임 종료 후 승자를 출력
-        System.out.println("게임 종료!");
-        findWinner();
     }
 
     // 카드를 나눠줌
@@ -112,78 +194,8 @@ public class SevensGame extends GameIntroduction{
         }
     }
 
-    // 플레이어의 턴
-    private void playerTurn() {
-        System.out.println("\n플레이어의 턴 ");
-        player.displayHand();
-
-        Scanner sc = new Scanner(System.in);
-        System.out.print("낼 카드 선택(또는 1장 뽑기 위해 0 입력) : ");
-        int cardToPlay = sc.nextInt();
-
-        if (cardToPlay == 0) {
-            if (playerDrawCount < MAX_DRAW_COUNT) {
-                drawCard(player);
-                System.out.println("플레이어가 카드를 뽑습니다.");
-                playerDrawCount++;
-            } else {
-                System.out.println("최대 드로우 한계에 도달했습니다.");
-            }
-        } else if (cardToPlay % 7 == 0) {
-            if (!player.getHand().contains(cardToPlay)) {
-                System.out.println("오류입니다! 손에 없는 카드를 선택하셨습니다.");
-            } else{
-                player.removeCard(cardToPlay);
-                System.out.println("플레이어가 " + cardToPlay + "를 선택하여 제거하였습니다.");
-            }
-        } else {
-            System.out.println("오류입니다! 7의 배수인 카드를 내야 합니다.");
-        }
-    }
-
-    // 컴퓨터의 턴
-    private void computerTurn() {
-        System.out.println("\n컴퓨터의 턴");
-        displayComputerHand(); // 컴퓨터가 가지고 있는 카드 출력
-
-        // 컴퓨터가 가지고 있는 카드 중 7의 배수인 카드를 찾음
-        boolean sevenMultipleCardExists = false;
-        int cardToPlay = 0;
-        for (int card : computer.getHand()) {
-            if (card % 7 == 0) {
-                sevenMultipleCardExists = true;
-                cardToPlay = card;
-                break;
-            }
-        }
-
-        if (sevenMultipleCardExists) { // 7의 배수인 카드가 있을 경우
-            computer.removeCard(cardToPlay);
-            System.out.println("컴퓨터가 " + cardToPlay + "를 선택하여 제거하였습니다.");
-        } else { // 7의 배수인 카드가 없을 경우
-            // 카드를 뽑음
-            if (computerDrawCount < MAX_DRAW_COUNT) {
-                drawCard(computer);
-                System.out.println("컴퓨터가 카드를 뽑습니다.");
-                computerDrawCount++;
-            } else {
-                System.out.println("컴퓨터가 최대 드로우 한계에 도달했습니다.");
-            }
-        }
-    }
-
-
-    // 컴퓨터가 가지고 있는 카드 출력
-    private void displayComputerHand() {
-        System.out.print("컴퓨터의 덱 : ");
-        for (int card : computer.getHand()) {
-            System.out.print(card + " ");
-        }
-        System.out.println();
-    }
-
     // 카드를 뽑음
-    private void drawCard(Player player) {
+    public void drawCard(Player player) {
         ArrayList<Integer> deck = new ArrayList<>();
         for (int i = 1; i <= 52; i++) {
             if (!player.getHand().contains(i)) {
@@ -204,6 +216,13 @@ public class SevensGame extends GameIntroduction{
 
         // 뽑은 카드를 플레이어의 손에 추가
         player.addCard(drawnCard);
+
+        // 플레이어가 카드를 뽑은 횟수 증가
+        if (player instanceof HumanPlayer1) {
+            playerDrawCount++;
+        } else if (player instanceof ComputerPlayer1) {
+            computerDrawCount++;
+        }
     }
 
     // 게임 종료 여부 확인
@@ -212,35 +231,42 @@ public class SevensGame extends GameIntroduction{
     }
 
     // 승자 찾기
-    private Player findWinner() {
+    public void findWinner() {
         if (player.getHandSize() == 0) {
-            return player;
+            System.out.println("최종 승자는 " + player.getName() + "입니다!");
         } else if (computer.getHandSize() == 0) {
-            return computer;
+            System.out.println("최종 승자는 " + computer.getName() + "입니다!");
         } else if (playerDrawCount >= MAX_DRAW_COUNT && computerDrawCount >= MAX_DRAW_COUNT) {
             // 최대 뽑기 횟수에 도달한 경우, 카드 수가 더 적은 쪽이 승리
             if (player.getHandSize() < computer.getHandSize()) {
-                System.out.println("최종 승자는 당신입니다!");
-                WinLose.winlose = 1;
-                return player;
+                System.out.println("최종 승자는 " + player.getName() + "입니다!");
             } else if (player.getHandSize() > computer.getHandSize()) {
-                System.out.println("승자는 컴퓨터입니다!");
-                WinLose.winlose = 0;
-                return computer;
+                System.out.println("최종 승자는 " + computer.getName() + "입니다!");
             } else {
                 System.out.println("승자는 없습니다!");
-                WinLose.winlose = 2;
-                return player; // 카드 수가 같을 경우 무승부
             }
-        } else {
-            return null; // 게임이 아직 종료되지 않았을 경우
         }
     }
 
+    // 플레이어가 카드를 뽑은 횟수 반환
+    public int getPlayerDrawCount() {
+        return playerDrawCount;
+    }
+
+    // 컴퓨터가 카드를 뽑은 횟수 반환+*
+    public int getComputerDrawCount() {
+        return computerDrawCount;
+    }
+
+    // 컴퓨터가 카드를 뽑은 횟수 증가
+    public void incrementComputerDrawCount() {
+        computerDrawCount++;
+    }
+
+    // 메인 메소드
     public static void main(String[] args) {
         SevensGame sevensGame = new SevensGame();
         sevensGame.introGame();
-        SevensGame game = new SevensGame();
-        game.startGame();
+        sevensGame.startGame();
     }
 }

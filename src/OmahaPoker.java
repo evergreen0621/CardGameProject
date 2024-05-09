@@ -13,15 +13,15 @@ public class OmahaPoker extends GameIntroduction{
     }
     
     private Deck deck; // 카드 덱
-    private Player1 humanPlayer; // 사용자 플레이어
-    private Player1 computerPlayer; // 컴퓨터 플레이어
-    private List<Card> communityCards; // 공통 카드(테이블에 나온 카드)
+    private HumanPlayer humanPlayer; // 사용자 플레이어
+    private ComputerPlayer computerPlayer; // 컴퓨터 플레이어
+    public List<Card> communityCards; // 공통 카드(테이블에 나온 카드)
 
     // OmahaPoker 클래스 생성자
     public OmahaPoker() {
         deck = new Deck(); // 새로운 카드 덱 생성
-        humanPlayer = new Player1(); // 사용자 플레이어 생성
-        computerPlayer = new Player1(); // 컴퓨터 플레이어 생성
+        humanPlayer = new HumanPlayer(this); // 사용자 플레이어 생성
+        computerPlayer = new ComputerPlayer(this); // 컴퓨터 플레이어 생성
         communityCards = new ArrayList<>(); // 공통 카드 리스트 생성
     }
 
@@ -30,8 +30,8 @@ public class OmahaPoker extends GameIntroduction{
         deck.shuffle(); // 카드 섞기
         dealCards(); // 카드 나눠주기
         showHands(); // 카드 보여주기
-        discardAndRedraw(humanPlayer); // 사용자가 카드 선택하고 새로 뽑기
-        computerAutomaticDraw(); // 컴퓨터가 자동으로 카드 선택하고 새로 뽑기
+        humanPlayer.discardAndRedraw(deck); // 사용자가 카드 선택하고 새로 뽑기
+        computerPlayer.computerAutomaticDraw(deck, communityCards); // 컴퓨터가 자동으로 카드 선택하고 새로 뽑기
         determineWinner(); // 승자 결정하기
     }
 
@@ -50,68 +50,6 @@ public class OmahaPoker extends GameIntroduction{
     private void showHands() {
         System.out.println("플레이어의 패 : " + humanPlayer.getHand()); // 사용자의 카드 보여주기
         System.out.println("공개 카드 : " + communityCards); // 공개 카드(테이블에 나온 카드) 보여주기
-    }
-
-    // 사용자가 카드 선택하고 새로 뽑는 메서드
-    private void discardAndRedraw(Player1 player) {
-        Scanner sc = new Scanner(System.in);
-
-        while(true){
-            System.out.print("버릴 카드를 골라주세요. (e.g., 1 2) : ");
-            String input = sc.nextLine(); // 사용자 입력 받기
-
-            if(input.equals("")){
-                break;
-            }
-            else if(input.equals("1") || input.equals("2") || input.equals("1 2")){
-                String[] indices = input.split(" "); // 입력된 숫자들을 공백을 기준으로 나눠 배열에 저장
-                List<Integer> discardIndices = new ArrayList<>();
-                for (String index : indices) {
-                    discardIndices.add(Integer.parseInt(index) - 1); // 입력된 숫자들을 정수형으로 변환하여 리스트에 추가
-                }
-                // 선택된 카드 버리기
-                Collections.sort(discardIndices, Collections.reverseOrder());
-                for (int index : discardIndices) {
-                    player.discardCard(index);
-                }
-    
-                // 새로운 카드 뽑기
-                for (int i = 0; i < discardIndices.size(); i++) {
-                    player.addCard(deck.drawCard());
-                }
-                break;
-            }
-            else{
-                System.out.println("잘못된 입력 방식입니다. 다시 입력해 주세요.");
-            }
-        }
-    }
-
-    // 컴퓨터가 자동으로 카드 선택하고 새로 뽑는 메서드
-    private void computerAutomaticDraw() {
-        List<Card> currentHand = computerPlayer.getHand(); // 컴퓨터의 현재 카드
-        List<Card> newHand = new ArrayList<>(currentHand); // 새로운 카드를 저장할 리스트
-
-        // 컴퓨터의 현재 패를 평가합니다.
-        HandRank currentRank = evaluateHand(currentHand, communityCards);
-
-        // 각 카드를 버려보고 새 카드를 뽑아서 평가합니다.
-        for (int i = 0; i < currentHand.size(); i++) {
-            List<Card> testHand = new ArrayList<>(currentHand);
-            testHand.remove(i); // 현재 카드를 제거합니다.
-            testHand.add(deck.drawCard()); // 새 카드를 뽑습니다.
-
-            HandRank testRank = evaluateHand(testHand, communityCards);
-
-            // 새 패가 더 좋은 경우에만 교환합니다.
-            if (testRank.compareTo(currentRank) > 0) {
-                newHand = testHand;
-                currentRank = testRank;
-            }
-        }
-
-        // 새로운 패로 업데이트합니다.
-        computerPlayer.setHand(newHand);
     }
 
     // 승자를 결정하는 메서드
@@ -161,7 +99,7 @@ public class OmahaPoker extends GameIntroduction{
     }
 
     // 패를 평가하는 메서드
-    private HandRank evaluateHand(List<Card> hand, List<Card> communityCards) {
+    public HandRank evaluateHand(List<Card> hand, List<Card> communityCards) {
         List<Card> allCards = new ArrayList<>(hand);
         allCards.addAll(communityCards);
         Collections.sort(allCards, Comparator.comparing(Card::getRank));
@@ -325,6 +263,89 @@ class Player1 {
         hand = newHand;
     }
 }
+
+// HumanPlayer 클래스
+class HumanPlayer extends Player1 {
+    private OmahaPoker game; // OmahaPoker 클래스의 인스턴스 변수
+
+    // HumanPlayer 클래스 생성자
+    public HumanPlayer(OmahaPoker game) {
+        this.game = game;
+    }
+
+    // 사용자가 카드를 선택하고 새로 뽑는 메서드
+    public void discardAndRedraw(Deck deck) {
+        Scanner sc = new Scanner(System.in);
+
+        while(true){
+            System.out.print("버릴 카드를 골라주세요. (e.g., 1 2) : ");
+            String input = sc.nextLine(); // 사용자 입력 받기
+
+            if(input.equals("")){
+                break;
+            }
+            else if(input.equals("1") || input.equals("2") || input.equals("1 2")){
+                String[] indices = input.split(" "); // 입력된 숫자들을 공백을 기준으로 나눠 배열에 저장
+                List<Integer> discardIndices = new ArrayList<>();
+                for (String index : indices) {
+                    discardIndices.add(Integer.parseInt(index) - 1); // 입력된 숫자들을 정수형으로 변환하여 리스트에 추가
+                }
+                // 선택된 카드 버리기
+                Collections.sort(discardIndices, Collections.reverseOrder());
+                for (int index : discardIndices) {
+                    discardCard(index);
+                }
+    
+                // 새로운 카드 뽑기
+                for (int i = 0; i < discardIndices.size(); i++) {
+                    addCard(deck.drawCard());
+                }
+                break;
+            }
+            else{
+                System.out.println("잘못된 입력 방식입니다. 다시 입력해 주세요.");
+            }
+        }
+    }
+}
+
+// ComputerPlayer 클래스
+class ComputerPlayer extends Player1 {
+    private OmahaPoker game; // OmahaPoker 클래스의 인스턴스 변수
+
+    // ComputerPlayer 클래스 생성자
+    public ComputerPlayer(OmahaPoker game) {
+        this.game = game;
+    }
+
+    // 컴퓨터가 자동으로 카드를 선택하고 새로 뽑는 메서드
+    public void computerAutomaticDraw(Deck deck, List<Card> communityCards) {
+        List<Card> currentHand = getHand(); // 컴퓨터의 현재 카드
+        List<Card> newHand = new ArrayList<>(currentHand); // 새로운 카드를 저장할 리스트
+
+        // 컴퓨터의 현재 패를 평가합니다.
+        HandRank currentRank = game.evaluateHand(currentHand, communityCards);
+
+        // 각 카드를 버려보고 새 카드를 뽑아서 평가합니다.
+        for (int i = 0; i < currentHand.size(); i++) {
+            List<Card> testHand = new ArrayList<>(currentHand);
+            testHand.remove(i); // 현재 카드를 제거합니다.
+            testHand.add(deck.drawCard()); // 새 카드를 뽑습니다.
+
+            HandRank testRank = game.evaluateHand(testHand, communityCards);
+
+            // 새 패가 더 좋은 경우에만 교환합니다.
+            if (testRank.compareTo(currentRank) > 0) {
+                newHand = testHand;
+                currentRank = testRank;
+            }
+        }
+
+        // 새로운 패로 업데이트합니다.
+        setHand(newHand);
+    }
+}
+
 
 // 카드 덱 클래스
 class Deck {
