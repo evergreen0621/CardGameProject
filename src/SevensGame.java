@@ -112,6 +112,7 @@ class ComputerPlayer1 extends Player {
             }
         }
 
+    
         if (sevenMultipleCardExists) {
             removeCard(cardToPlay);
             System.out.println(name + "가 " + cardToPlay + "를 선택하여 제거하였습니다.");
